@@ -12,6 +12,7 @@ function App() {
     setMinutes((prev) => {
       if (prev !== value) {
         setIsStart(true);
+        setIsSetTimer(false);
         return value;
       }
       return prev;
