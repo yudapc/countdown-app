@@ -1,6 +1,7 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect, memo, useRef } from 'react';
 
 const CountDown = ({ minutes }) => {
+  const audioRef = useRef(null);
   const [timeLeft, setTimeLeft] = useState(Number(minutes) * 60);
 
   useEffect(() => {
@@ -10,6 +11,10 @@ const CountDown = ({ minutes }) => {
       }, 1000);
 
       return () => clearInterval(timerId);
+    }
+
+    if (timeLeft === 0) {
+      audioRef.current.play();
     }
   }, [timeLeft]);
 
@@ -22,6 +27,7 @@ const CountDown = ({ minutes }) => {
 
   return (
     <>
+      <audio ref={audioRef} src="/ringtone.wav" />
       {timeLeft > 0 ? (
         <h2>{displayFormatTime(timeLeft)}</h2>
       ) : (

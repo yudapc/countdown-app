@@ -11,7 +11,6 @@ const SetTimer = ({ value, handleStart }) => {
       alert('Please enter a valid number');
     }
   };
-  console.log('SetTimer: ', {valueInput, value});
   return (
     <div style={{
       display: 'flex',
