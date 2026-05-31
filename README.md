@@ -1,12 +1,39 @@
-# React + Vite
+# Tools
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a mobile-first React tools app that provides two core utilities: a persistent countdown timer and a persistent counter. The app uses URL-based navigation, theme switching (`device`, `light`, `dark`), responsive layouts for smartphone usage, and local storage persistence so timer and counter state remain available across page changes and reloads.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Project Structure
 
-## Expanding the ESLint configuration
+This project now uses a feature-first structure to keep each domain isolated and easier to scale.
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```text
+src/
+	App.jsx
+	main.jsx
+	features/
+		index.js
+		countdown/
+			CountdownFeature.jsx
+			components/
+				CountDown.jsx
+				SetTimer.jsx
+		counter/
+			CounterCountFeature.jsx
+			hooks/
+				usePersistentCount.js
+	shared/
+		index.js
+		components/
+			ActionRow.jsx
+			CenteredColumn.jsx
+		hooks/
+			useLocalStorageState.js
+```
+
+### Why this structure
+
+- Keep countdown and counter logic separated by feature.
+- Avoid mixed responsibilities inside one file.
+- Make onboarding easier because each feature has a clear home.
+- Put reusable layouts and utilities in shared to reduce duplication.
