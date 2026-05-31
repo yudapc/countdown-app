@@ -145,10 +145,10 @@ function App() {
 
           <div className="feature-panel">
             <Routes>
-            <Route path="/" element={<Navigate to="/countdown" replace />} />
+            <Route path="/" element={<Navigate to="/counter" replace />} />
             <Route path="/counter" element={<CounterCountFeature />} />
             <Route path="/countdown" element={<CountdownFeature />} />
-            <Route path="*" element={<Navigate to="/countdown" replace />} />
+            <Route path="*" element={<Navigate to="/counter" replace />} />
             </Routes>
           </div>
         </div>
