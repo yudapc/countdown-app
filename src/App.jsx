@@ -70,7 +70,7 @@ function App() {
         <div className="header-inner">
           <h1 className="app-title">Tools</h1>
           <div className="theme-switcher" ref={themeMenuRef}>
-            <span className="theme-label">Theme</span>
+            <span className="theme-label" />
             <div className="theme-menu-wrap">
               <button
                 type="button"
@@ -125,7 +125,7 @@ function App() {
 
       {isActive && !isCountdownPage && (
         <NavLink to="/countdown" className="floating-countdown-chip">
-          <span className="floating-countdown-label">Countdown Berjalan</span>
+          <span className="floating-countdown-label" />
           <strong>{formattedTime}</strong>
         </NavLink>
       )}

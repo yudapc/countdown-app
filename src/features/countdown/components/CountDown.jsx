@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef } from 'react';
+import React, { memo } from 'react';
 
 const formatTime = (seconds) => {
   const hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
@@ -8,31 +8,14 @@ const formatTime = (seconds) => {
 };
 
 const CountDown = ({ secondsLeft, isActive }) => {
-  const audioRef = useRef(null);
-  const previousSecondsRef = useRef(secondsLeft);
-
-  useEffect(() => {
-    const prev = previousSecondsRef.current;
-    if (prev > 0 && secondsLeft === 0) {
-      audioRef.current?.play()?.catch(() => {
-        // Ignore autoplay restrictions in some browsers.
-      });
-    }
-
-    previousSecondsRef.current = secondsLeft;
-  }, [secondsLeft]);
-
   if (!isActive && secondsLeft === 0) {
     return <p className="countdown-message">Set timer untuk memulai countdown.</p>;
   }
 
   return (
-    <>
-      <audio ref={audioRef} src="/ringtone.wav" />
-      {/* <p className="countdown-message">
-        {secondsLeft > 0 ? `Sisa waktu ${formatTime(secondsLeft)}` : 'Time is up!'}
-      </p> */}
-    </>
+    <p className="countdown-message">
+      {secondsLeft > 0 ? `Sisa waktu ${formatTime(secondsLeft)}` : 'Time is up!'}
+    </p>
   );
 };
 

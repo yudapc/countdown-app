@@ -361,8 +361,10 @@
   .floating-countdown-chip {
     top: 62px;
     right: 8px;
-    min-width: 122px;
+    min-width:80px;
     padding: 7px 10px;
+    text-align: center;
+    margin-top: 4px;
   }
 
   .countdown-header {

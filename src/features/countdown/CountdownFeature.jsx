@@ -6,7 +6,6 @@ import { useCountdown } from '../../shared';
 const CountdownFeature = () => {
   const { formattedTime, isActive, remainingSeconds, startCountdown, stopCountdown } = useCountdown();
   const [minutes, setMinutes] = useState(0);
-  const [isSetTimer, setIsSetTimer] = useState(false);
 
   const handleStart = (value) => {
     const nextMinutes = Number(value);
@@ -16,7 +15,6 @@ const CountdownFeature = () => {
 
     setMinutes(nextMinutes);
     startCountdown(nextMinutes);
-    setIsSetTimer(false);
   };
 
   return (
@@ -30,15 +28,12 @@ const CountdownFeature = () => {
       <CountDown secondsLeft={remainingSeconds} isActive={isActive} />
 
       <div className="countdown-actions">
-        <button className="countdown-action-btn" onClick={() => setIsSetTimer((prev) => !prev)}>
-          {isSetTimer ? 'Hide' : 'Show'} Set Timer
-        </button>
-        <button className="countdown-action-btn countdown-stop-btn" onClick={stopCountdown} disabled={!isActive}>
+        {isActive && <button className="countdown-action-btn countdown-stop-btn" onClick={stopCountdown} disabled={!isActive}>
           Stop
-        </button>
-      </div>
+        </button>}
 
-      {isSetTimer && <SetTimer initialValue={minutes} onStart={handleStart} />}
+        {!isActive && <SetTimer initialValue={minutes} onStart={handleStart} />}
+      </div>
     </div>
   );
 };

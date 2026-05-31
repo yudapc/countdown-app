@@ -15,6 +15,7 @@ export const CountdownProvider = ({ children }) => {
   const [endAt, setEndAt] = useLocalStorageState('countdown-end-at', null);
   const [now, setNow] = useState(Date.now());
   const previousRemainingRef = useRef(0);
+  const isManualStopRef = useRef(false);
 
   useEffect(() => {
     if (!endAt) {
@@ -40,11 +41,15 @@ export const CountdownProvider = ({ children }) => {
 
   useEffect(() => {
     const previous = previousRemainingRef.current;
-    if (previous > 0 && remainingSeconds === 0) {
+    if (previous > 0 && remainingSeconds === 0 && !isManualStopRef.current) {
       const audio = new Audio('/ringtone.wav');
       audio.play().catch(() => {
         // Ignore autoplay restrictions in some browsers.
       });
+    }
+
+    if (remainingSeconds === 0) {
+      isManualStopRef.current = false;
     }
 
     previousRemainingRef.current = remainingSeconds;
@@ -62,12 +67,14 @@ export const CountdownProvider = ({ children }) => {
       return;
     }
 
+    isManualStopRef.current = false;
     const durationMs = Math.floor(nextMinutes * 60 * 1000);
     const target = Date.now() + durationMs;
     setEndAt(target);
   };
 
   const stopCountdown = () => {
+    isManualStopRef.current = true;
     setEndAt(null);
   };
 
