@@ -8,6 +8,54 @@
     linear-gradient(180deg, #f5f6f8, #eef3f8 44%, #e8eef6 100%);
 }
 
+.pull-refresh-indicator {
+  --pull-progress: 0;
+  position: fixed;
+  top: 8px;
+  left: 50%;
+  z-index: 80;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #c9d9e8;
+  color: #1f4f69;
+  background: rgba(247, 252, 255, 0.94);
+  box-shadow: 0 10px 26px rgba(17, 49, 80, 0.2);
+  opacity: 0;
+  transform: translate(-50%, calc(-140% + (var(--pull-progress) * 70px)));
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  pointer-events: none;
+}
+
+.pull-refresh-indicator.visible {
+  opacity: 1;
+}
+
+.pull-refresh-indicator svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  transform: rotate(calc(var(--pull-progress) * 180deg));
+  transition: transform 0.16s ease;
+}
+
+.pull-refresh-indicator.refreshing {
+  transform: translate(-50%, 6px);
+}
+
+.pull-refresh-indicator.refreshing svg {
+  animation: pull-refresh-spin 0.75s linear infinite;
+}
+
+@keyframes pull-refresh-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .app-header {
   position: fixed;
   top: 0;
@@ -36,7 +84,7 @@
 }
 
 .app-main {
-  min-height: 90vh;
+  min-height: 100vh;
   padding: 152px 10px 18px;
   display: flex;
   align-items: flex-end;
@@ -471,6 +519,13 @@
     radial-gradient(circle at top right, rgba(120, 72, 34, 0.26), transparent 40%),
     radial-gradient(circle at bottom left, rgba(20, 110, 96, 0.24), transparent 44%),
     linear-gradient(180deg, #0b1220, #111a2c 44%, #0f1728 100%);
+}
+
+:root[data-theme='dark'] .pull-refresh-indicator {
+  border-color: #30425d;
+  color: #cbe3f6;
+  background: rgba(18, 30, 48, 0.92);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.36);
 }
 
 :root[data-theme='dark'] .app-header,

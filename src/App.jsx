@@ -22,10 +22,13 @@ function CountdownIcon() {
 
 function App() {
   const themeMenuRef = useRef(null)
+  const isRefreshingRef = useRef(false)
   const location = useLocation()
   const { isActive, formattedTime } = useCountdown()
   const [themeMode, setThemeMode] = useLocalStorageState('theme-mode', 'system')
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false)
+  const [pullProgress, setPullProgress] = useState(0)
+  const [isPullRefreshing, setIsPullRefreshing] = useState(false)
   const [deviceTheme, setDeviceTheme] = useState(() => {
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
       return 'dark'
@@ -51,6 +54,94 @@ function App() {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', activeTheme)
   }, [activeTheme])
+
+  useEffect(() => {
+    const pullThreshold = 90
+    let startY = 0
+    let isPulling = false
+    let hasTriggered = false
+
+    const triggerRefresh = async () => {
+      if (isRefreshingRef.current) {
+        return
+      }
+
+      isRefreshingRef.current = true
+      setIsPullRefreshing(true)
+      setPullProgress(1)
+
+      try {
+        if ('serviceWorker' in navigator) {
+          const registration = await navigator.serviceWorker.getRegistration()
+          if (registration) {
+            await registration.update()
+          }
+        }
+
+        await new Promise((resolve) => {
+          window.setTimeout(resolve, 280)
+        })
+      } finally {
+        window.location.reload()
+      }
+    }
+
+    const handleTouchStart = (event) => {
+      if (window.scrollY > 0 || event.touches.length !== 1) {
+        return
+      }
+
+      startY = event.touches[0].clientY
+      isPulling = true
+      hasTriggered = false
+      setPullProgress(0)
+    }
+
+    const handleTouchMove = (event) => {
+      if (!isPulling || window.scrollY > 0) {
+        return
+      }
+
+      const pullDistance = event.touches[0].clientY - startY
+      if (pullDistance <= 0) {
+        return
+      }
+
+      if (event.cancelable) {
+        event.preventDefault()
+      }
+
+      const normalizedProgress = Math.min(1, pullDistance / pullThreshold)
+      setPullProgress(normalizedProgress)
+
+      if (pullDistance >= pullThreshold && !hasTriggered) {
+        hasTriggered = true
+        triggerRefresh()
+      }
+    }
+
+    const handleTouchEnd = () => {
+      isPulling = false
+      hasTriggered = false
+
+      if (!isRefreshingRef.current) {
+        setPullProgress(0)
+        setIsPullRefreshing(false)
+      }
+    }
+
+    window.addEventListener('touchstart', handleTouchStart, { passive: true })
+    window.addEventListener('touchmove', handleTouchMove, { passive: false })
+    window.addEventListener('touchend', handleTouchEnd)
+    window.addEventListener('touchcancel', handleTouchEnd)
+
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart)
+      window.removeEventListener('touchmove', handleTouchMove)
+      window.removeEventListener('touchend', handleTouchEnd)
+      window.removeEventListener('touchcancel', handleTouchEnd)
+    }
+  }, [])
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -145,6 +236,15 @@ function App() {
 
   return (
     <div className="app-shell">
+      <div
+        className={`pull-refresh-indicator ${pullProgress > 0 || isPullRefreshing ? 'visible' : ''} ${isPullRefreshing ? 'refreshing' : ''}`}
+        style={{ '--pull-progress': pullProgress }}
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M12 4a8 8 0 1 0 7.38 11h-2.2A6 6 0 1 1 12 6v3l4-4-4-4v3Z" />
+        </svg>
+      </div>
+
       <header className="app-header">
         <div className="header-inner">
           <h1 className="app-title">Tools</h1>
