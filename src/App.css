@@ -85,9 +85,9 @@
 
 .app-main {
   min-height: 100vh;
-  padding: 152px 10px 18px;
+  padding: 132px 10px max(22px, env(safe-area-inset-bottom));
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: center;
 }
 
@@ -105,16 +105,16 @@
 .top-menu {
   max-width: 900px;
   margin: 0 auto;
-  padding: 8px 10px;
+  padding: 6px 10px;
   display: flex;
   gap: 8px;
 }
 
 .top-menu .menu-link {
   flex: 1 1 0;
-  min-height: 52px;
+  min-height: 48px;
   border-radius: 14px;
-  padding: 9px 12px;
+  padding: 7px 12px;
 }
 
 .top-menu .menu-link {
@@ -136,13 +136,14 @@
 
 .app-card {
   width: min(720px, 100%);
-  padding: 16px 12px;
+  padding: 14px 12px;
   border-radius: 16px;
   text-align: center;
   background: rgba(250, 252, 255, 0.9);
   border: 1px solid #d6e0ec;
   box-shadow: 0 20px 50px rgba(18, 44, 73, 0.14);
   backdrop-filter: blur(4px);
+  margin-top: 12px;
 }
 
 .product-eyebrow {
@@ -259,7 +260,7 @@
 }
 
 .feature-panel {
-  padding: 12px 10px;
+  padding: 10px;
   border-radius: 16px;
   border: 1px solid #dce5ef;
   background: #f8fbff;
@@ -267,7 +268,7 @@
 
 .floating-countdown-chip {
   position: fixed;
-  top: 150px;
+  top: 132px;
   right: 8px;
   z-index: 20;
   display: flex;
@@ -287,6 +288,33 @@
   font-size: 0.66rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .header-inner {
+    padding: 8px 10px;
+  }
+
+  .menu-dock {
+    top: 56px;
+  }
+
+  .top-menu {
+    padding: 5px 8px;
+  }
+
+  .top-menu .menu-link {
+    min-height: 46px;
+    padding: 6px 10px;
+  }
+
+  .app-main {
+    padding: 122px 10px max(18px, env(safe-area-inset-bottom));
+  }
+
+  .floating-countdown-chip {
+    top: 118px;
+  }
 }
 
 .countdown-feature {
