@@ -4,6 +4,22 @@ import { CountdownFeature, CounterCountFeature } from './features'
 import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import { ActionRow, useCountdown, useLocalStorageState } from './shared'
 
+function CounterIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M8 5h8a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3Zm0 2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1H8Zm1 2h6v2H9V9Zm0 4h6v2H9v-2Z" />
+    </svg>
+  )
+}
+
+function CountdownIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M11 2h2v3h-2V2Zm6.36 3.22 1.42 1.42-2.12 2.12-1.42-1.42 2.12-2.12ZM12 7a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm1 4.5V11h-2v4.25l3.25 1.95 1-1.64-2.25-1.35Z" />
+    </svg>
+  )
+}
+
 function App() {
   const themeMenuRef = useRef(null)
   const location = useLocation()
@@ -70,7 +86,7 @@ function App() {
         <div className="header-inner">
           <h1 className="app-title">Tools</h1>
           <div className="theme-switcher" ref={themeMenuRef}>
-            <span className="theme-label" />
+            <span className="theme-label">Theme</span>
             <div className="theme-menu-wrap">
               <button
                 type="button"
@@ -125,23 +141,16 @@ function App() {
 
       {isActive && !isCountdownPage && (
         <NavLink to="/countdown" className="floating-countdown-chip">
-          <span className="floating-countdown-label" />
+          <span className="floating-countdown-label">Countdown Berjalan</span>
           <strong>{formattedTime}</strong>
         </NavLink>
       )}
 
       <main className="app-main">
         <div className="card app-card">
-          <p className="product-subtitle" />
-
-          <ActionRow style={{ marginBottom: '20px', flexWrap: 'wrap' }}>
-            <NavLink to="/counter" className={menuLinkClassName}>
-              1. Counter Count
-            </NavLink>
-            <NavLink to="/countdown" className={menuLinkClassName}>
-              2. Count Down
-            </NavLink>
-          </ActionRow>
+          <p className="product-subtitle">
+            Counter dan countdown untuk workflow harian.
+          </p>
 
           <div className="feature-panel">
             <Routes>
@@ -155,9 +164,16 @@ function App() {
       </main>
 
       <footer className="app-footer">
-        <p className="copyright-text">
-          Copyright 2026. All rights reserved.
-        </p>
+        <nav className="bottom-menu" aria-label="Main navigation">
+          <NavLink to="/counter" className={menuLinkClassName}>
+            <CounterIcon />
+            <span className="menu-link-label">Counter</span>
+          </NavLink>
+          <NavLink to="/countdown" className={menuLinkClassName}>
+            <CountdownIcon />
+            <span className="menu-link-label">Countdown</span>
+          </NavLink>
+        </nav>
       </footer>
     </div>
   )
