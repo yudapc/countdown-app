@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://countdown-app-smoky.vercel.app/sitemap.xml

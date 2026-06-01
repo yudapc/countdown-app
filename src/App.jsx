@@ -78,6 +78,69 @@ function App() {
   const themeOptionClassName = (mode) =>
     `theme-menu-item ${themeMode === mode ? 'theme-menu-item-active' : ''}`
 
+  useEffect(() => {
+    const defaultKeywords =
+      'timer online, countdown online, tasbih online, counter online, stopwatch online, hitung mundur online'
+
+    const seoByPath = {
+      '/counter': {
+        title: 'Counter Online dan Tasbih Online | Timer Online',
+        description:
+          'Counter online dan tasbih online yang ringan untuk menghitung aktivitas harian dengan cepat.',
+      },
+      '/waktu': {
+        title: 'Countdown Online dan Timer Online | Timer Online',
+        description:
+          'Countdown online dan timer online untuk bantu fokus kerja, belajar, olahraga, dan rutinitas harian.',
+      },
+      default: {
+        title: 'Timer Online, Countdown Online, Tasbih Online',
+        description:
+          'Aplikasi timer online serbaguna berisi countdown online, counter, dan tasbih online dalam satu tempat.',
+      },
+    }
+
+    const currentSeo = seoByPath[location.pathname] || seoByPath.default
+
+    const setMetaByName = (name, content) => {
+      let tag = document.head.querySelector(`meta[name="${name}"]`)
+      if (!tag) {
+        tag = document.createElement('meta')
+        tag.setAttribute('name', name)
+        document.head.appendChild(tag)
+      }
+      tag.setAttribute('content', content)
+    }
+
+    const setMetaByProperty = (property, content) => {
+      let tag = document.head.querySelector(`meta[property="${property}"]`)
+      if (!tag) {
+        tag = document.createElement('meta')
+        tag.setAttribute('property', property)
+        document.head.appendChild(tag)
+      }
+      tag.setAttribute('content', content)
+    }
+
+    const canonicalHref = `${window.location.origin}${location.pathname}`
+    let canonical = document.head.querySelector('link[rel="canonical"]')
+    if (!canonical) {
+      canonical = document.createElement('link')
+      canonical.setAttribute('rel', 'canonical')
+      document.head.appendChild(canonical)
+    }
+    canonical.setAttribute('href', canonicalHref)
+
+    document.title = currentSeo.title
+    setMetaByName('description', currentSeo.description)
+    setMetaByName('keywords', defaultKeywords)
+    setMetaByName('twitter:title', currentSeo.title)
+    setMetaByName('twitter:description', currentSeo.description)
+    setMetaByProperty('og:title', currentSeo.title)
+    setMetaByProperty('og:description', currentSeo.description)
+    setMetaByProperty('og:url', canonicalHref)
+  }, [location.pathname])
+
   const isWaktuPage = location.pathname === '/waktu' || location.pathname === '/countdown'
 
   return (
