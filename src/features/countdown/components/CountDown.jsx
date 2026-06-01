@@ -9,13 +9,11 @@ const formatTime = (seconds) => {
 
 const CountDown = ({ secondsLeft, isActive }) => {
   if (!isActive && secondsLeft === 0) {
-    return <p className="countdown-message">Masukkan waktu (menit) dan klik Start untuk memulai countdown.</p>;
+    return <p className="countdown-message">Masukkan waktu (menit) lalu tekan Mulai untuk memulai hitung mundur.</p>;
   }
 
   return (
-    <p className="countdown-message">
-      {secondsLeft > 0 ? `Sisa waktu ${formatTime(secondsLeft)}` : 'Time is up!'}
-    </p>
+    <></>
   );
 };
 

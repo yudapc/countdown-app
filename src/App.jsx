@@ -78,7 +78,7 @@ function App() {
   const themeOptionClassName = (mode) =>
     `theme-menu-item ${themeMode === mode ? 'theme-menu-item-active' : ''}`
 
-  const isCountdownPage = location.pathname === '/countdown'
+  const isWaktuPage = location.pathname === '/waktu' || location.pathname === '/countdown'
 
   return (
     <div className="app-shell">
@@ -145,16 +145,16 @@ function App() {
             <CounterIcon />
             <span className="menu-link-label">Counter</span>
           </NavLink>
-          <NavLink to="/countdown" className={menuLinkClassName}>
+          <NavLink to="/waktu" className={menuLinkClassName}>
             <CountdownIcon />
-            <span className="menu-link-label">Countdown</span>
+            <span className="menu-link-label">Waktu</span>
           </NavLink>
         </nav>
       </div>
 
-      {isActive && !isCountdownPage && (
-        <NavLink to="/countdown" className="floating-countdown-chip">
-          <span className="floating-countdown-label">Countdown Berjalan</span>
+      {isActive && !isWaktuPage && (
+        <NavLink to="/waktu" className="floating-countdown-chip">
+          <span className="floating-countdown-label">Hitung Mundur</span>
           <strong>{formattedTime}</strong>
         </NavLink>
       )}
@@ -165,7 +165,8 @@ function App() {
             <Routes>
             <Route path="/" element={<Navigate to="/counter" replace />} />
             <Route path="/counter" element={<CounterCountFeature />} />
-            <Route path="/countdown" element={<CountdownFeature />} />
+            <Route path="/waktu" element={<CountdownFeature />} />
+            <Route path="/countdown" element={<Navigate to="/waktu" replace />} />
             <Route path="*" element={<Navigate to="/counter" replace />} />
             </Routes>
           </div>

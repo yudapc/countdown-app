@@ -20,16 +20,15 @@ const CountdownFeature = () => {
   return (
     <div className="countdown-feature">
       <div className="countdown-header">
-        <p className="countdown-caption">Current Session</p>
+        <p className="countdown-caption">Hitung Mundur</p>
         <h2 className="countdown-time">{formattedTime}</h2>
-        {isActive ? <p className="countdown-status">Timer sedang berjalan</p> : <p className="countdown-status">Timer belum aktif</p>}
       </div>
 
       <CountDown secondsLeft={remainingSeconds} isActive={isActive} />
 
       <div className="countdown-actions">
         {isActive && <button className="countdown-action-btn countdown-stop-btn" onClick={stopCountdown} disabled={!isActive}>
-          Stop
+          Berhenti
         </button>}
 
         {!isActive && <SetTimer initialValue={minutes} onStart={handleStart} />}

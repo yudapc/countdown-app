@@ -39,7 +39,6 @@ const CounterCountFeature = () => {
           Reset
         </button>
       </ActionRow>
-      <small style={{ opacity: 0.8 }}>Nilai counter disimpan di device (local).</small>
     </CenteredColumn>
   );
 };

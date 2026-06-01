@@ -54,7 +54,7 @@ const SetTimer = ({ initialValue = 0, onStart }) => {
         onClick={handleStart}
         disabled={!canStart}
       >
-        Start
+        Mulai
       </button>
     </CenteredColumn>
   );
