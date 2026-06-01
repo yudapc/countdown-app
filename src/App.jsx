@@ -86,7 +86,7 @@ function App() {
         <div className="header-inner">
           <h1 className="app-title">Tools</h1>
           <div className="theme-switcher" ref={themeMenuRef}>
-            <span className="theme-label">Theme</span>
+            <span className="theme-label" />
             <div className="theme-menu-wrap">
               <button
                 type="button"
