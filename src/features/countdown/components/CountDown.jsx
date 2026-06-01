@@ -13,12 +13,7 @@ const CountDown = ({ secondsLeft, isActive }) => {
   }
 
   return (
-    <>
-      <p className="countdown-time">{formatTime(secondsLeft)}</p>
-      <p className="countdown-message">
-        {isActive ? 'Countdown sedang berjalan. Fokus dulu, notifikasi akan bunyi saat selesai.' : 'Countdown dihentikan.'}
-      </p>
-    </>
+    <></>
   );
 };
 
