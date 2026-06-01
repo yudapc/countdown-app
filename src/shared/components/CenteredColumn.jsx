@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CenteredColumn = ({ children, gap = '12px', style = {} }) => {
+const CenteredColumn = ({ children, gap = '50px', style = {} }) => {
   return (
     <div
       style={{
