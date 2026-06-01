@@ -226,11 +226,11 @@ function App() {
         <div className="card app-card">
           <div className="feature-panel">
             <Routes>
-            <Route path="/" element={<Navigate to="/counter" replace />} />
-            <Route path="/counter" element={<CounterCountFeature />} />
-            <Route path="/waktu" element={<CountdownFeature />} />
-            <Route path="/countdown" element={<Navigate to="/waktu" replace />} />
-            <Route path="*" element={<Navigate to="/counter" replace />} />
+              <Route path="/" element={<Navigate to="/counter" replace />} />
+              <Route path="/counter" element={<CounterCountFeature />} />
+              <Route path="/waktu" element={<CountdownFeature />} />
+              <Route path="/countdown" element={<Navigate to="/waktu" replace />} />
+              <Route path="*" element={<Navigate to="/counter" replace />} />
             </Routes>
           </div>
         </div>

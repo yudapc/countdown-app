@@ -345,6 +345,89 @@
   background: linear-gradient(180deg, #fff6f0, #fffdfb);
 }
 
+.counter-touch-layout {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.counter-secondary-actions {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.counter-icon-btn {
+  width: 52px;
+  height: 52px;
+  min-height: 52px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.counter-icon-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.counter-minus-btn {
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.counter-reset-btn {
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  flex-basis: auto;
+}
+
+.counter-reset-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.counter-primary-plus-btn {
+  width: 100%;
+  min-height: 74px;
+  border-radius: 18px;
+  font-size: 2rem;
+  font-weight: 800;
+  border-color: #35b39e;
+  color: #0d4a41;
+  background: linear-gradient(180deg, #d2f8e7, #b8f1d7);
+  box-shadow: 0 14px 24px rgba(53, 179, 158, 0.24);
+}
+
+.counter-primary-plus-btn:hover {
+  border-color: #2f9e8c;
+  box-shadow: 0 16px 28px rgba(47, 158, 140, 0.26);
+}
+
+.counter-side-actions {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.counter-side-actions .counter-action-btn {
+  width: 100%;
+  min-height: 56px;
+  font-size: 1.12rem;
+}
+
 .copyright-text {
   margin: 0;
   font-size: 0.68rem;
@@ -371,6 +454,16 @@
   width: 100%;
   min-height: 52px;
   font-size: 1rem;
+}
+
+.counter-side-actions .counter-action-btn {
+  min-height: 58px;
+  font-size: 1.14rem;
+}
+
+.counter-primary-plus-btn {
+  min-height: 78px;
+  font-size: 2.1rem;
 }
 
 :root[data-theme='dark'] .app-shell {
@@ -473,4 +566,11 @@
 
 :root[data-theme='dark'] .countdown-start-btn {
   color: green;
+}
+
+:root[data-theme='dark'] .counter-primary-plus-btn {
+  border-color: #3eb29d;
+  color: #d4fff3;
+  background: linear-gradient(180deg, #1e5448, #1a443a);
+  box-shadow: 0 14px 24px rgba(0, 0, 0, 0.36);
 }

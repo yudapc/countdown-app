@@ -13,7 +13,7 @@ const CountDown = ({ secondsLeft, isActive }) => {
   }
 
   return (
-    <></>
+    <p className="countdown-time">{formatTime(secondsLeft)}</p>
   );
 };
 
