@@ -2,7 +2,7 @@ import './App.css'
 import React, { useEffect, useRef, useState } from 'react'
 import { CountdownFeature, CounterCountFeature } from './features'
 import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
-import { ActionRow, useCountdown, useLocalStorageState } from './shared'
+import { useCountdown, useLocalStorageState } from './shared'
 
 function CounterIcon() {
   return (
@@ -139,6 +139,19 @@ function App() {
         </div>
       </header>
 
+      <div className="menu-dock">
+        <nav className="top-menu" aria-label="Main navigation">
+          <NavLink to="/counter" className={menuLinkClassName}>
+            <CounterIcon />
+            <span className="menu-link-label">Counter</span>
+          </NavLink>
+          <NavLink to="/countdown" className={menuLinkClassName}>
+            <CountdownIcon />
+            <span className="menu-link-label">Countdown</span>
+          </NavLink>
+        </nav>
+      </div>
+
       {isActive && !isCountdownPage && (
         <NavLink to="/countdown" className="floating-countdown-chip">
           <span className="floating-countdown-label">Countdown Berjalan</span>
@@ -162,19 +175,6 @@ function App() {
           </div>
         </div>
       </main>
-
-      <footer className="app-footer">
-        <nav className="bottom-menu" aria-label="Main navigation">
-          <NavLink to="/counter" className={menuLinkClassName}>
-            <CounterIcon />
-            <span className="menu-link-label">Counter</span>
-          </NavLink>
-          <NavLink to="/countdown" className={menuLinkClassName}>
-            <CountdownIcon />
-            <span className="menu-link-label">Countdown</span>
-          </NavLink>
-        </nav>
-      </footer>
     </div>
   )
 }
