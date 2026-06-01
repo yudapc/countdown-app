@@ -161,10 +161,6 @@ function App() {
 
       <main className="app-main">
         <div className="card app-card">
-          <p className="product-subtitle">
-            Counter dan countdown untuk workflow harian.
-          </p>
-
           <div className="feature-panel">
             <Routes>
             <Route path="/" element={<Navigate to="/counter" replace />} />

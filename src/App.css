@@ -304,6 +304,8 @@
 
 .countdown-start-btn {
   width: 100%;
+  background: linear-gradient(180deg, #d1f7e0, #b0f0c8);
+  color:#1b5e3c
 }
 
 .countdown-input {
@@ -315,6 +317,7 @@
   font-size: 1rem;
   color: #19394d;
   background: #ffffff;
+  text-align: center;
 }
 
 .countdown-input-hint {
@@ -323,6 +326,7 @@
   text-align: left;
   color: #658093;
   font-size: 0.78rem;
+  text-align: center;
 }
 
 .counter-action-btn {
@@ -465,4 +469,8 @@
   border-color: #84593f;
   color: #ffd4bd;
   background: linear-gradient(180deg, #3c2d24, #322721);
+}
+
+:root[data-theme='dark'] .countdown-start-btn {
+  color: green;
 }

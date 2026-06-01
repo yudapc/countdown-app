@@ -9,7 +9,7 @@ const formatTime = (seconds) => {
 
 const CountDown = ({ secondsLeft, isActive }) => {
   if (!isActive && secondsLeft === 0) {
-    return <p className="countdown-message">Set timer untuk memulai countdown.</p>;
+    return <p className="countdown-message">Masukkan waktu (menit) dan klik Start untuk memulai countdown.</p>;
   }
 
   return (
