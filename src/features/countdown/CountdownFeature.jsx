@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import CountDown from './components/CountDown';
-import SetTimer from './components/SetTimer';
+import { SetTimer } from './components';
 import { useCountdown } from '../../shared';
 
 const CountdownFeature = () => {
-  const { formattedTime, isActive, remainingSeconds, startCountdown, stopCountdown } = useCountdown();
+  const { formattedTime, isActive, startCountdown, stopCountdown } = useCountdown();
   const [minutes, setMinutes] = useState(0);
 
   const handleStart = (value) => {
@@ -23,8 +22,6 @@ const CountdownFeature = () => {
         <p className="countdown-caption">Hitung Mundur</p>
         <h2 className="countdown-time">{formattedTime}</h2>
       </div>
-
-      <CountDown secondsLeft={remainingSeconds} isActive={isActive} />
 
       <div className="countdown-actions">
         {isActive && <button className="countdown-action-btn countdown-stop-btn" onClick={stopCountdown} disabled={!isActive}>

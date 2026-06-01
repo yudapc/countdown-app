@@ -1,5 +1,5 @@
 import React from 'react';
-import usePersistentCount from './hooks/usePersistentCount';
+import { usePersistentCount } from './hooks';
 import { CenteredColumn } from '../../shared';
 
 const CounterCountFeature = () => {
