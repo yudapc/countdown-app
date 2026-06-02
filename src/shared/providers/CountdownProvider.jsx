@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import CountdownContext from '../context/CountdownContext'
 import useLocalStorageState from '../hooks/useLocalStorageState'
 
@@ -15,6 +15,70 @@ const CountdownProvider = ({ children }) => {
   const [now, setNow] = useState(Date.now())
   const previousRemainingRef = useRef(0)
   const isManualStopRef = useRef(false)
+  const alarmAudioRef = useRef(null)
+  const hasUnlockedAudioRef = useRef(false)
+
+  const ensureAudio = useCallback(() => {
+    if (!alarmAudioRef.current) {
+      const audio = new Audio('/ringtone.wav')
+      audio.preload = 'auto'
+      alarmAudioRef.current = audio
+    }
+
+    return alarmAudioRef.current
+  }, [])
+
+  const unlockAudioPlayback = useCallback(async () => {
+    if (hasUnlockedAudioRef.current) {
+      return
+    }
+
+    const audio = ensureAudio()
+    const previousMuted = audio.muted
+    audio.muted = true
+
+    try {
+      await audio.play()
+      audio.pause()
+      audio.currentTime = 0
+      hasUnlockedAudioRef.current = true
+    } catch {
+      // Some browsers keep autoplay locked until stronger user activation.
+    } finally {
+      audio.muted = previousMuted
+    }
+  }, [ensureAudio])
+
+  const playAlarm = useCallback(async () => {
+    const audio = ensureAudio()
+
+    try {
+      audio.currentTime = 0
+      audio.muted = false
+      await audio.play()
+    } catch {
+      const fallback = new Audio('/ringtone.wav')
+      fallback.play().catch(() => {
+        // Ignore autoplay restrictions in some browsers.
+      })
+    }
+  }, [ensureAudio])
+
+  useEffect(() => {
+    ensureAudio()
+
+    const handleUserActivation = () => {
+      unlockAudioPlayback()
+    }
+
+    window.addEventListener('pointerdown', handleUserActivation, { passive: true })
+    window.addEventListener('keydown', handleUserActivation)
+
+    return () => {
+      window.removeEventListener('pointerdown', handleUserActivation)
+      window.removeEventListener('keydown', handleUserActivation)
+    }
+  }, [ensureAudio, unlockAudioPlayback])
 
   useEffect(() => {
     if (!endAt) {
@@ -41,10 +105,7 @@ const CountdownProvider = ({ children }) => {
   useEffect(() => {
     const previous = previousRemainingRef.current
     if (previous > 0 && remainingSeconds === 0 && !isManualStopRef.current) {
-      const audio = new Audio('/ringtone.wav')
-      audio.play().catch(() => {
-        // Ignore autoplay restrictions in some browsers.
-      })
+      playAlarm()
     }
 
     if (remainingSeconds === 0) {
@@ -52,7 +113,7 @@ const CountdownProvider = ({ children }) => {
     }
 
     previousRemainingRef.current = remainingSeconds
-  }, [remainingSeconds])
+  }, [playAlarm, remainingSeconds])
 
   useEffect(() => {
     if (endAt && remainingSeconds === 0) {
@@ -67,6 +128,7 @@ const CountdownProvider = ({ children }) => {
     }
 
     isManualStopRef.current = false
+    unlockAudioPlayback()
     const durationMs = Math.floor(nextMinutes * 60 * 1000)
     const target = Date.now() + durationMs
     setEndAt(target)
