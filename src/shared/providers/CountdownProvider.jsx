@@ -14,6 +14,7 @@ const CountdownProvider = ({ children }) => {
   const [endAt, setEndAt] = useLocalStorageState('countdown-end-at', null)
   const [now, setNow] = useState(Date.now())
   const previousRemainingRef = useRef(0)
+  const hasHydratedRef = useRef(false)
   const isManualStopRef = useRef(false)
   const alarmAudioRef = useRef(null)
   const hasUnlockedAudioRef = useRef(false)
@@ -66,19 +67,7 @@ const CountdownProvider = ({ children }) => {
 
   useEffect(() => {
     ensureAudio()
-
-    const handleUserActivation = () => {
-      unlockAudioPlayback()
-    }
-
-    window.addEventListener('pointerdown', handleUserActivation, { passive: true })
-    window.addEventListener('keydown', handleUserActivation)
-
-    return () => {
-      window.removeEventListener('pointerdown', handleUserActivation)
-      window.removeEventListener('keydown', handleUserActivation)
-    }
-  }, [ensureAudio, unlockAudioPlayback])
+  }, [ensureAudio])
 
   useEffect(() => {
     if (!endAt) {
@@ -103,6 +92,12 @@ const CountdownProvider = ({ children }) => {
   })()
 
   useEffect(() => {
+    if (!hasHydratedRef.current) {
+      hasHydratedRef.current = true
+      previousRemainingRef.current = remainingSeconds
+      return
+    }
+
     const previous = previousRemainingRef.current
     if (previous > 0 && remainingSeconds === 0 && !isManualStopRef.current) {
       playAlarm()
