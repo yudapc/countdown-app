@@ -154,7 +154,6 @@
   justify-content: center;
   gap: 2px;
   padding: 6px 12px;
-  height: 60px;
 }
 
 /* safe area spacer */
@@ -176,9 +175,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* ini yang bikin icon + label center */
-  height: 100%; /* full height dari .bottom-tabs-inner */
-  padding: 0 8px; /* hapus padding atas bawah, biar height yang kontrol */
+  justify-content: center;
+  padding: 6px 8px 4px;
   border-radius: 12px;
   color: var(--text-tertiary);
   text-decoration: none;
