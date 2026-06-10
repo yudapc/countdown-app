@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useQuranList, useSurahDetail, useJuzDetail } from './hooks'
@@ -98,31 +99,16 @@ const JuzList = () => {
 }
 
 const AyahCard = ({ ayah, id, onLongPress, ...rest }) => {
-  const longPressRef = useRef(null)
-
-  const clearTimer = () => {
-    if (longPressRef.current) {
-      clearTimeout(longPressRef.current)
-      longPressRef.current = null
-    }
-  }
-
-  useEffect(() => () => clearTimer(), [])
-
-  const handlePointerDown = () => {
-    longPressRef.current = setTimeout(() => {
-      onLongPress?.(ayah)
-    }, 600)
+  const handleContextMenu = (e) => {
+    e.preventDefault()
+    onLongPress?.(ayah)
   }
 
   return (
     <div
       className={`ayah-card ${ayah.ayah_number}`}
       id={id}
-      onPointerDown={handlePointerDown}
-      onPointerUp={clearTimer}
-      onPointerMove={clearTimer}
-      onPointerCancel={clearTimer}
+      onContextMenu={handleContextMenu}
       {...rest}
     >
       <div className="ayah-num">{ayah.ayah_number}</div>
@@ -330,43 +316,38 @@ const SurahView = ({ number, onBack }) => {
         ))}
       </div>
       {contextMenuAyah && !showConfirmOverwrite && (
-        <div className="goto-overlay" onClick={handleCancelAll}>
-          <div className="goto-popup" onClick={(e) => e.stopPropagation()}>
-            <div className="last-read-popup-info" style={{ marginBottom: 12, textAlign: 'center' }}>
-              {contextMenuAyah.surahName} · Ayat {contextMenuAyah.ayahNumber}
-            </div>
-            <div className="last-read-popup-actions">
-              <button className="goto-btn" onClick={handleMarkLastRead}>
-                📑 Tandai terakhir dibaca
-              </button>
-              <button className="secondary-btn" onClick={handleCancelAll}>
-                Batal
-              </button>
-            </div>
+        <BottomDrawer onClose={handleCancelAll}>
+          <div className="bottom-drawer-title">Tandai terakhir dibaca</div>
+          <div className="bottom-drawer-ayah">{contextMenuAyah.surahName} · Ayat {contextMenuAyah.ayahNumber}</div>
+          <div className="bottom-drawer-actions">
+            <button className="goto-btn" onClick={handleMarkLastRead}>
+              📑 Tandai
+            </button>
+            <button className="secondary-btn" onClick={handleCancelAll}>
+              Batal
+            </button>
           </div>
-        </div>
+        </BottomDrawer>
       )}
       {showConfirmOverwrite && contextMenuAyah && lastRead && (
-        <div className="goto-overlay" onClick={handleCancelAll}>
-          <div className="goto-popup" onClick={(e) => e.stopPropagation()}>
-            <h3 className="last-read-popup-title">Konfirmasi</h3>
-            <p className="last-read-popup-info">
-              Apakah anda yakin untuk merubah{' '}
-              <strong>{lastRead.surahName || `Surah ${lastRead.surahNumber}`} · Ayat {lastRead.ayahNumber}</strong>
-              {' '}menjadi{' '}
-              <strong>{contextMenuAyah.surahName} · Ayat {contextMenuAyah.ayahNumber}</strong>
-              ?
-            </p>
-            <div className="last-read-popup-actions">
-              <button className="goto-btn" onClick={handleConfirmOverwrite}>
-                Ya, Simpan
-              </button>
-              <button className="secondary-btn" onClick={handleCancelAll}>
-                Batal
-              </button>
-            </div>
+        <BottomDrawer onClose={handleCancelAll}>
+          <div className="bottom-drawer-title">Konfirmasi</div>
+          <p className="bottom-drawer-info">
+            Apakah anda yakin untuk merubah{' '}
+            <strong>{lastRead.surahName || `Surah ${lastRead.surahNumber}`} · Ayat {lastRead.ayahNumber}</strong>
+            {' '}menjadi{' '}
+            <strong>{contextMenuAyah.surahName} · Ayat {contextMenuAyah.ayahNumber}</strong>
+            ?
+          </p>
+          <div className="bottom-drawer-actions">
+            <button className="goto-btn" onClick={handleConfirmOverwrite}>
+              Ya, Simpan
+            </button>
+            <button className="secondary-btn" onClick={handleCancelAll}>
+              Batal
+            </button>
           </div>
-        </div>
+        </BottomDrawer>
       )}
     </div>
   )
@@ -468,43 +449,38 @@ const JuzView = ({ number, onBack }) => {
         ))}
       </div>
       {contextMenuAyah && !showConfirmOverwrite && (
-        <div className="goto-overlay" onClick={handleCancelAll}>
-          <div className="goto-popup" onClick={(e) => e.stopPropagation()}>
-            <div className="last-read-popup-info" style={{ marginBottom: 12, textAlign: 'center' }}>
-              {contextMenuAyah.surahName} · Ayat {contextMenuAyah.ayahNumber}
-            </div>
-            <div className="last-read-popup-actions">
-              <button className="goto-btn" onClick={handleMarkLastRead}>
-                📑 Tandai terakhir dibaca
-              </button>
-              <button className="secondary-btn" onClick={handleCancelAll}>
-                Batal
-              </button>
-            </div>
+        <BottomDrawer onClose={handleCancelAll}>
+          <div className="bottom-drawer-title">Tandai terakhir dibaca</div>
+          <div className="bottom-drawer-ayah">{contextMenuAyah.surahName} · Ayat {contextMenuAyah.ayahNumber}</div>
+          <div className="bottom-drawer-actions">
+            <button className="goto-btn" onClick={handleMarkLastRead}>
+              📑 Tandai
+            </button>
+            <button className="secondary-btn" onClick={handleCancelAll}>
+              Batal
+            </button>
           </div>
-        </div>
+        </BottomDrawer>
       )}
       {showConfirmOverwrite && contextMenuAyah && lastRead && (
-        <div className="goto-overlay" onClick={handleCancelAll}>
-          <div className="goto-popup" onClick={(e) => e.stopPropagation()}>
-            <h3 className="last-read-popup-title">Konfirmasi</h3>
-            <p className="last-read-popup-info">
-              Apakah anda yakin untuk merubah{' '}
-              <strong>{lastRead.surahName || `Surah ${lastRead.surahNumber}`} · Ayat {lastRead.ayahNumber}</strong>
-              {' '}menjadi{' '}
-              <strong>{contextMenuAyah.surahName} · Ayat {contextMenuAyah.ayahNumber}</strong>
-              ?
-            </p>
-            <div className="last-read-popup-actions">
-              <button className="goto-btn" onClick={handleConfirmOverwrite}>
-                Ya, Simpan
-              </button>
-              <button className="secondary-btn" onClick={handleCancelAll}>
-                Batal
-              </button>
-            </div>
+        <BottomDrawer onClose={handleCancelAll}>
+          <div className="bottom-drawer-title">Konfirmasi</div>
+          <p className="bottom-drawer-info">
+            Apakah anda yakin untuk merubah{' '}
+            <strong>{lastRead.surahName || `Surah ${lastRead.surahNumber}`} · Ayat {lastRead.ayahNumber}</strong>
+            {' '}menjadi{' '}
+            <strong>{contextMenuAyah.surahName} · Ayat {contextMenuAyah.ayahNumber}</strong>
+            ?
+          </p>
+          <div className="bottom-drawer-actions">
+            <button className="goto-btn" onClick={handleConfirmOverwrite}>
+              Ya, Simpan
+            </button>
+            <button className="secondary-btn" onClick={handleCancelAll}>
+              Batal
+            </button>
           </div>
-        </div>
+        </BottomDrawer>
       )}
     </div>
   )
@@ -556,6 +532,17 @@ const LastReadOverlay = ({ lastRead, onSurahMode, onJuzMode, onClose }) => {
     </div>
   )
 }
+
+const BottomDrawer = ({ children, onClose }) =>
+  createPortal(
+    <div className="bottom-drawer-overlay" onClick={onClose}>
+      <div className="bottom-drawer" onClick={(e) => e.stopPropagation()}>
+        <div className="bottom-drawer-handle" />
+        {children}
+      </div>
+    </div>,
+    document.body
+  )
 
 const QuranFeature = () => {
   const { surahNumber, juzNumber } = useParams()
