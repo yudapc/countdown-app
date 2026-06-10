@@ -1,35 +1,24 @@
 import { useState, useEffect } from 'react'
-import { getCached, setCache } from '../../../shared/utils'
+import { getJuz } from '../quranData'
 
 export const useJuzDetail = (number) => {
-  const [verses, setVerses] = useState([])
+  const [verses, setVerses] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
     if (!number) return
     let cancelled = false
-    const cacheKey = `juz-${number}`
-
-    const cached = getCached(cacheKey)
-    if (cached) {
-      setVerses(cached)
-      setLoading(false)
-      return
-    }
-
     setLoading(true)
     setError(null)
-    fetch(`https://api.myquran.com/v3/quran/juz/${number}`)
-      .then((r) => r.json())
-      .then((data) => {
+
+    getJuz(number)
+      .then((result) => {
         if (!cancelled) {
-          if (data.status === false) {
-            setError(data.message || 'Gagal memuat juz')
+          if (!result || result.length === 0) {
+            setError('Juz tidak ditemukan')
           } else {
-            const list = data.data || []
-            setCache(cacheKey, list)
-            setVerses(list)
+            setVerses(result)
           }
           setLoading(false)
         }
@@ -40,7 +29,10 @@ export const useJuzDetail = (number) => {
           setLoading(false)
         }
       })
-    return () => { cancelled = true }
+
+    return () => {
+      cancelled = true
+    }
   }, [number])
 
   return { verses, loading, error }

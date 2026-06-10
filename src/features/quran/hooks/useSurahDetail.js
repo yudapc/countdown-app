@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getCached, setCache } from '../../../shared/utils'
+import { getSurah } from '../quranData'
 
 export const useSurahDetail = (number) => {
   const [surah, setSurah] = useState(null)
@@ -9,26 +9,16 @@ export const useSurahDetail = (number) => {
   useEffect(() => {
     if (!number) return
     let cancelled = false
-    const cacheKey = `surah-${number}`
-
-    const cached = getCached(cacheKey)
-    if (cached) {
-      setSurah(cached)
-      setLoading(false)
-      return
-    }
-
     setLoading(true)
     setError(null)
-    fetch(`https://api.myquran.com/v3/quran/${number}`)
-      .then((r) => r.json())
-      .then((data) => {
+
+    getSurah(number)
+      .then((result) => {
         if (!cancelled) {
-          if (data.status === false) {
-            setError(data.message || 'Gagal memuat surah')
+          if (!result) {
+            setError('Surah tidak ditemukan')
           } else {
-            setCache(cacheKey, data.data)
-            setSurah(data.data)
+            setSurah(result)
           }
           setLoading(false)
         }
@@ -39,7 +29,10 @@ export const useSurahDetail = (number) => {
           setLoading(false)
         }
       })
-    return () => { cancelled = true }
+
+    return () => {
+      cancelled = true
+    }
   }, [number])
 
   return { surah, loading, error }
