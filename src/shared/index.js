@@ -1,3 +1,5 @@
 export * from './components'
 export * from './hooks'
+export * from './context'
+export * from './utils'
 export { default as CountdownProvider } from './providers/CountdownProvider'

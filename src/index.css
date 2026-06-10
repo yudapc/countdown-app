@@ -2,21 +2,21 @@
   --font-sans: 'Sora', system-ui, -apple-system, sans-serif;
   --font-mono: 'SF Mono', 'JetBrains Mono', ui-monospace, monospace;
 
-  --bg: #f2efe9;
+  --bg: #f0f2eb;
   --surface: #ffffff;
-  --surface-alt: #faf7f2;
-  --primary: #c4623e;
-  --primary-soft: #fceee8;
-  --secondary: #3a7d7a;
-  --secondary-soft: #e8f3f0;
-  --accent: #d99b6a;
-  --text: #1c1816;
-  --text-secondary: #8a7a6e;
-  --text-tertiary: #b0a296;
-  --border: #e6ded6;
-  --shadow-sm: 0 1px 3px rgba(28, 24, 22, 0.06);
-  --shadow: 0 4px 16px rgba(28, 24, 22, 0.08);
-  --shadow-lg: 0 8px 32px rgba(28, 24, 22, 0.12);
+  --surface-alt: #f8faf3;
+  --primary: #2d6a4f;
+  --primary-soft: #edf7f0;
+  --secondary: #b9935a;
+  --secondary-soft: #faf5ea;
+  --accent: #d4a373;
+  --text: #1a2e1f;
+  --text-secondary: #5a6b5e;
+  --text-tertiary: #8a9b8e;
+  --border: #dde4d6;
+  --shadow-sm: 0 1px 3px rgba(26, 46, 31, 0.06);
+  --shadow: 0 4px 16px rgba(26, 46, 31, 0.08);
+  --shadow-lg: 0 8px 32px rgba(26, 46, 31, 0.12);
   --radius-sm: 10px;
   --radius: 16px;
   --radius-lg: 24px;
@@ -24,18 +24,18 @@
 }
 
 :root[data-theme='dark'] {
-  --bg: #101014;
-  --surface: #1a1a20;
-  --surface-alt: #22222c;
-  --primary: #f0a86c;
-  --primary-soft: #2a1e14;
-  --secondary: #6bb5b0;
-  --secondary-soft: #142524;
-  --accent: #d99b6a;
-  --text: #f0edec;
-  --text-secondary: #8a827a;
-  --text-tertiary: #5c544e;
-  --border: #2a2826;
+  --bg: #0f1a12;
+  --surface: #18241c;
+  --surface-alt: #202e24;
+  --primary: #4ade80;
+  --primary-soft: #0a2e1a;
+  --secondary: #d4a373;
+  --secondary-soft: #1e180e;
+  --accent: #b9935a;
+  --text: #e8f0e8;
+  --text-secondary: #8a9b8e;
+  --text-tertiary: #4a5b4e;
+  --border: #243028;
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
   --shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);

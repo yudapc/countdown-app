@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { registerSW } from 'virtual:pwa-register'
 import './index.css'
 import App from './App.jsx'
-import { CountdownProvider } from './shared'
+import { CountdownProvider, HeaderProvider, AudioProvider } from './shared'
 
 const updateSW = registerSW({
   immediate: true,
@@ -35,7 +35,11 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <CountdownProvider>
-        <App />
+        <HeaderProvider>
+          <AudioProvider>
+            <App />
+          </AudioProvider>
+        </HeaderProvider>
       </CountdownProvider>
     </BrowserRouter>
   </StrictMode>,
