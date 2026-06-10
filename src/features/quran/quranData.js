@@ -1,6 +1,12 @@
 // Loader + normalizer untuk ./public/quran-full.json
 // Semua operasi pakai data lokal — no API call.
 
+// ── Audio CDN ────────────────────────────────────────────────────
+// Audio tetap streaming dari CDN (gak mungkin offline tanpa download file audio).
+// Ganti konstanta ini kalau mau ganti sumber/tartil.
+const AUDIO_CDN_URL =
+  'https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/{surahNumber}.mp3'
+
 // ── Juz boundaries (known, standard) ──────────────────────────────
 // Format: [surahStart, ayahStart, surahEnd, ayahEnd]
 // see https://en.wikipedia.org/wiki/Juz'
@@ -70,6 +76,9 @@ const normalizeAyah = (a, surahNumber) => ({
   transliteration: a.tr,
 })
 
+const surahAudioUrl = (surahNumber) =>
+  AUDIO_CDN_URL.replace('{surahNumber}', surahNumber)
+
 const normalizeSurah = (s) => ({
   number: s.nomor,
   name_latin: s.nama_latin,
@@ -78,6 +87,7 @@ const normalizeSurah = (s) => ({
   revelation: s.tempat_turun,
   number_of_ayahs: s.jumlah_ayat,
   ayahs: (s.ayat || []).map((a) => normalizeAyah(a, s.nomor)),
+  audio_url: surahAudioUrl(s.nomor),
 })
 
 // ── Public helpers ───────────────────────────────────────────────
