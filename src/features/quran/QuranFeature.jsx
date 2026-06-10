@@ -101,6 +101,7 @@ const AyahCard = ({ ayah, id }) => {
     <div className={`ayah-card ${ayah.ayah_number}`} id={id}>
       <div className="ayah-num">{ayah.ayah_number}</div>
       <div className="ayah-arab">{ayah.arab}</div>
+      <div className="ayah-latin">{ayah.transliteration}</div>
       <div className="ayah-trans">{ayah.translation}</div>
     </div>
   )
