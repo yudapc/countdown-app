@@ -240,18 +240,20 @@ function App() {
       )}
 
       <nav className="bottom-tabs">
-        <NavLink to="/tasbih" aria-label="Tasbih" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
-          <TasbihIcon />
-        </NavLink>
-        <NavLink to="/waktu" aria-label="Waktu" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
-          <WaktuIcon />
-        </NavLink>
-        <NavLink to="/quran" aria-label="Quran" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
-          <QuranIcon />
-        </NavLink>
-        <NavLink to="/hadits" aria-label="Hadits" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
-          <HaditsIcon />
-        </NavLink>
+        <div class="bottom-tabs-inner">
+          <NavLink to="/tasbih" aria-label="Tasbih" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
+            <TasbihIcon />
+          </NavLink>
+          <NavLink to="/waktu" aria-label="Waktu" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
+            <WaktuIcon />
+          </NavLink>
+          <NavLink to="/quran" aria-label="Quran" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
+            <QuranIcon />
+          </NavLink>
+          <NavLink to="/hadits" aria-label="Hadits" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
+            <HaditsIcon />
+          </NavLink>
+        </div>
       </nav>
     </div>
   )
