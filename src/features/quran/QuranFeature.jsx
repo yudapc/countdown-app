@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useQuranList, useSurahDetail, useJuzDetail } from './hooks'
 import { useHeader, useAudio } from '../../shared'
@@ -93,9 +93,9 @@ const JuzList = () => {
   )
 }
 
-const AyahCard = ({ ayah }) => {
+const AyahCard = ({ ayah, id }) => {
   return (
-    <div className="ayah-card">
+    <div className={`ayah-card ${ayah.ayah_number}`} id={id}>
       <div className="ayah-num">{ayah.ayah_number}</div>
       <div className="ayah-arab">{ayah.arab}</div>
       <div className="ayah-trans">{ayah.translation}</div>
@@ -125,12 +125,45 @@ const AudioPlayer = ({ surahNumber, audioUrl, surahName }) => {
 const SurahView = ({ number, onBack }) => {
   const { surah, loading, error } = useSurahDetail(number)
   const { setHeader, clearHeader } = useHeader()
+  const [gotoOpen, setGotoOpen] = useState(false)
+  const [gotoValue, setGotoValue] = useState('')
+  const [scrollToAyah, setScrollToAyah] = useState(null)
+  const gotoInputRef = useRef(null)
+
+  useEffect(() => {
+    if (scrollToAyah !== null) {
+      const el = document.getElementById(`surah-ayah-${scrollToAyah}`)
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        el.classList.add('ayah-highlight')
+        setTimeout(() => el.classList.remove('ayah-highlight'), 2000)
+      }
+      setScrollToAyah(null)
+    }
+  }, [scrollToAyah])
+
+  useEffect(() => {
+    if (gotoOpen) {
+      setTimeout(() => gotoInputRef.current?.focus(), 100)
+    }
+  }, [gotoOpen])
 
   useEffect(() => {
     const name = surah?.name_latin || surah?.name || 'Surah'
     setHeader(name, onBack)
     return () => clearHeader()
   }, [surah, onBack, setHeader, clearHeader])
+
+  const handleGoto = (e) => {
+    e.preventDefault()
+    const num = parseInt(gotoValue, 10)
+    const total = surah?.number_of_ayahs || surah?.ayahs?.length || 0
+    if (num >= 1 && num <= total) {
+      setScrollToAyah(num)
+      setGotoOpen(false)
+    }
+    setGotoValue('')
+  }
 
   if (loading) {
     return (
@@ -167,11 +200,36 @@ const SurahView = ({ number, onBack }) => {
           </p>
         </div>
         {audioUrl && <AudioPlayer surahNumber={number} audioUrl={audioUrl} surahName={nameLatin} />}
+        <button className="goto-icon-btn" onClick={() => setGotoOpen(true)} aria-label="Lompat ke ayat" title="Lompat ke ayat">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="20" height="20">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+          </svg>
+        </button>
       </div>
       <div className="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+      {gotoOpen && (
+        <div className="goto-overlay" onClick={() => setGotoOpen(false)}>
+          <div className="goto-popup" onClick={(e) => e.stopPropagation()}>
+            <form onSubmit={handleGoto}>
+              <label className="goto-label">Lompat ke ayat</label>
+              <input
+                ref={gotoInputRef}
+                className="goto-input"
+                type="number"
+                min={1}
+                max={totalAyahs}
+                placeholder={`1 – ${totalAyahs}`}
+                value={gotoValue}
+                onChange={(e) => setGotoValue(e.target.value)}
+              />
+              <button className="goto-btn" type="submit">Go</button>
+            </form>
+          </div>
+        </div>
+      )}
       <div className="ayah-list">
         {Array.isArray(verses) && verses.map((ayah, idx) => (
-          <AyahCard key={ayah.id || ayah.ayah_number || idx} ayah={ayah} />
+          <AyahCard key={ayah.id || ayah.ayah_number || idx} id={`surah-ayah-${ayah.ayah_number}`} ayah={ayah} />
         ))}
       </div>
     </div>
