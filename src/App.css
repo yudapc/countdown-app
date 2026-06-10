@@ -171,6 +171,7 @@
   transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
   gap: 2px;
+  height: 4em;
 }
 
 .tab-btn svg {
@@ -417,7 +418,7 @@
 
 .tasbih-plus-btn {
   width: 100%;
-  max-width: 280px;
+  max-width: 360px;
   min-height: 74px;
   border-radius: 37px;
   font-size: 2rem;
