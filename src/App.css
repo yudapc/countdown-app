@@ -102,7 +102,7 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
   padding: 4px 16px 72px;
   scroll-behavior: smooth;
 }
@@ -1297,4 +1297,45 @@
   :root[data-theme='dark'] body {
     background: #0a1a0e;
   }
+}
+
+/* ─── Pull to Refresh ─── */
+
+.ptr-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 56px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+  color: var(--primary);
+}
+
+.ptr-icon {
+  width: 22px;
+  height: 22px;
+  transition: transform 0.25s ease;
+}
+
+.ptr-refreshing .ptr-icon {
+  animation: ptr-spin 0.8s linear infinite;
+}
+
+@keyframes ptr-spin {
+  to { transform: rotate(360deg); }
+}
+
+.ptr-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  opacity: 0.7;
+  text-align: center;
 }

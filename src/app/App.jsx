@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { CountdownFeature, TasbihFeature, QuranFeature, HaditsFeature } from '../features'
 import { Navigate, NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { useCountdown, useLocalStorageState, useHeader, useAudio } from '../shared'
+import { PullToRefresh } from '../shared/components'
 
 const TAB_NAMES = {
   '/tasbih': 'Tasbih',
@@ -169,6 +170,14 @@ function App() {
     }
   }
 
+  const handleRefresh = () => {
+    localStorage.clear()
+    if ('caches' in window) {
+      caches.keys().then((names) => names.forEach((n) => caches.delete(n)))
+    }
+    window.location.reload()
+  }
+
   return (
     <div className="app-shell">
       <header className="app-header">
@@ -196,21 +205,23 @@ function App() {
       </header>
 
       <main className="app-main">
-        <div className="tab-content" key={location.pathname}>
-          <Routes>
-            <Route path="/" element={<Navigate to="/tasbih" replace />} />
-            <Route path="/tasbih" element={<TasbihFeature />} />
-            <Route path="/waktu" element={<CountdownFeature />} />
-            <Route path="/quran" element={<QuranListPage />} />
-            <Route path="/quran/juz/:juzNumber" element={<QuranJuzPage />} />
-            <Route path="/quran/:surahNumber" element={<QuranSurahPage />} />
-            <Route path="/hadits" element={<HaditsListPage />} />
-            <Route path="/hadits/:slug" element={<HaditsDetailPage />} />
-            <Route path="/countdown" element={<Navigate to="/waktu" replace />} />
-            <Route path="/counter" element={<Navigate to="/tasbih" replace />} />
-            <Route path="*" element={<Navigate to="/tasbih" replace />} />
-          </Routes>
-        </div>
+        <PullToRefresh onRefresh={handleRefresh}>
+          <div className="tab-content" key={location.pathname}>
+            <Routes>
+              <Route path="/" element={<Navigate to="/tasbih" replace />} />
+              <Route path="/tasbih" element={<TasbihFeature />} />
+              <Route path="/waktu" element={<CountdownFeature />} />
+              <Route path="/quran" element={<QuranListPage />} />
+              <Route path="/quran/juz/:juzNumber" element={<QuranJuzPage />} />
+              <Route path="/quran/:surahNumber" element={<QuranSurahPage />} />
+              <Route path="/hadits" element={<HaditsListPage />} />
+              <Route path="/hadits/:slug" element={<HaditsDetailPage />} />
+              <Route path="/countdown" element={<Navigate to="/waktu" replace />} />
+              <Route path="/counter" element={<Navigate to="/tasbih" replace />} />
+              <Route path="*" element={<Navigate to="/tasbih" replace />} />
+            </Routes>
+          </div>
+        </PullToRefresh>
       </main>
 
       {isActive && !isCountdownPage && (
