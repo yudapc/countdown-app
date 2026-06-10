@@ -5,6 +5,9 @@ import { useHeader, useAudio } from '../../shared'
 
 const Juz_LIST = Array.from({ length: 30 }, (_, i) => i + 1)
 
+const BISMILLAH = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ'
+const stripTashkeel = (s) => s.replace(/[ً-ٰٟ]/g, '')
+
 const SearchInput = ({ value, onChange, placeholder }) => (
   <div className="search-wrap">
     <svg className="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -189,6 +192,7 @@ const SurahView = ({ number, onBack }) => {
   const revelation = surah?.revelation || ''
   const totalAyahs = surah?.number_of_ayahs || verses.length
   const audioUrl = surah?.audio_url || ''
+  const hideBismillah = verses[0]?.arab && stripTashkeel(verses[0].arab) === stripTashkeel(BISMILLAH)
 
   return (
     <div className="surah-view">
@@ -206,7 +210,7 @@ const SurahView = ({ number, onBack }) => {
           </svg>
         </button>
       </div>
-      <div className="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+      {!hideBismillah && <div className="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>}
       {gotoOpen && (
         <div className="goto-overlay" onClick={() => setGotoOpen(false)}>
           <div className="goto-popup" onClick={(e) => e.stopPropagation()}>
