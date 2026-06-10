@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useQuranList, useSurahDetail, useJuzDetail } from './hooks'
 import { useHeader, useAudio } from '../../shared'
+import { saveLastRead, getLastRead, findJuzForAyah } from './lastRead'
 
 const Juz_LIST = Array.from({ length: 30 }, (_, i) => i + 1)
 
@@ -96,9 +97,34 @@ const JuzList = () => {
   )
 }
 
-const AyahCard = ({ ayah, id }) => {
+const AyahCard = ({ ayah, id, onLongPress, ...rest }) => {
+  const longPressRef = useRef(null)
+
+  const clearTimer = () => {
+    if (longPressRef.current) {
+      clearTimeout(longPressRef.current)
+      longPressRef.current = null
+    }
+  }
+
+  useEffect(() => () => clearTimer(), [])
+
+  const handlePointerDown = () => {
+    longPressRef.current = setTimeout(() => {
+      onLongPress?.(ayah)
+    }, 600)
+  }
+
   return (
-    <div className={`ayah-card ${ayah.ayah_number}`} id={id}>
+    <div
+      className={`ayah-card ${ayah.ayah_number}`}
+      id={id}
+      onPointerDown={handlePointerDown}
+      onPointerUp={clearTimer}
+      onPointerMove={clearTimer}
+      onPointerCancel={clearTimer}
+      {...rest}
+    >
       <div className="ayah-num">{ayah.ayah_number}</div>
       <div className="ayah-arab">{ayah.arab}</div>
       <div className="ayah-latin">{ayah.transliteration}</div>
@@ -129,11 +155,18 @@ const AudioPlayer = ({ surahNumber, audioUrl, surahName }) => {
 const SurahView = ({ number, onBack }) => {
   const { surah, loading, error } = useSurahDetail(number)
   const { setHeader, clearHeader } = useHeader()
+  const navigate = useNavigate()
+  const location = useLocation()
   const [gotoOpen, setGotoOpen] = useState(false)
   const [gotoValue, setGotoValue] = useState('')
   const [scrollToAyah, setScrollToAyah] = useState(null)
   const gotoInputRef = useRef(null)
+  const externalScrollDoneRef = useRef(false)
+  const [contextMenuAyah, setContextMenuAyah] = useState(null)
+  const [showConfirmOverwrite, setShowConfirmOverwrite] = useState(false)
+  const lastRead = getLastRead()
 
+  // ── Scroll to ayah (internal goto) ────────────────────────────
   useEffect(() => {
     if (scrollToAyah !== null) {
       const el = document.getElementById(`surah-ayah-${scrollToAyah}`)
@@ -145,6 +178,65 @@ const SurahView = ({ number, onBack }) => {
       setScrollToAyah(null)
     }
   }, [scrollToAyah])
+
+  // ── Scroll to ayah from external navigation (e.g. last read) ──
+  useEffect(() => {
+    if (!surah || externalScrollDoneRef.current) return
+    const target = location.state?.scrollToAyah
+    if (!target) return
+
+    const el = document.getElementById(`surah-ayah-${target}`)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      el.classList.add('ayah-highlight')
+      setTimeout(() => el.classList.remove('ayah-highlight'), 2000)
+    }
+    externalScrollDoneRef.current = true
+    navigate(location.pathname, { replace: true, state: {} })
+  }, [surah, location.state?.scrollToAyah, location.pathname, navigate])
+
+  // ── Long press → show context menu ────────────────────────────
+  const handleLongPress = useCallback(
+    (ayahData) => {
+      setShowConfirmOverwrite(false)
+      setContextMenuAyah({
+        ayahNumber: ayahData.ayah_number,
+        surahNumber: surah.number,
+        surahName: surah.name_latin || surah.name || '',
+      })
+    },
+    [surah]
+  )
+
+  // ── Context menu: "Tandai terakhir dibaca" ────────────────────
+  const handleMarkLastRead = () => {
+    if (lastRead) {
+      setShowConfirmOverwrite(true)
+    } else {
+      saveLastRead({
+        surahNumber: contextMenuAyah.surahNumber,
+        ayahNumber: contextMenuAyah.ayahNumber,
+        surahName: contextMenuAyah.surahName,
+      })
+      setContextMenuAyah(null)
+    }
+  }
+
+  // ── Confirm overwrite ─────────────────────────────────────────
+  const handleConfirmOverwrite = () => {
+    saveLastRead({
+      surahNumber: contextMenuAyah.surahNumber,
+      ayahNumber: contextMenuAyah.ayahNumber,
+      surahName: contextMenuAyah.surahName,
+    })
+    setContextMenuAyah(null)
+    setShowConfirmOverwrite(false)
+  }
+
+  const handleCancelAll = () => {
+    setContextMenuAyah(null)
+    setShowConfirmOverwrite(false)
+  }
 
   useEffect(() => {
     if (gotoOpen) {
@@ -234,15 +326,117 @@ const SurahView = ({ number, onBack }) => {
       )}
       <div className="ayah-list">
         {Array.isArray(verses) && verses.map((ayah, idx) => (
-          <AyahCard key={ayah.id || ayah.ayah_number || idx} id={`surah-ayah-${ayah.ayah_number}`} ayah={ayah} />
+          <AyahCard key={ayah.id || ayah.ayah_number || idx} id={`surah-ayah-${ayah.ayah_number}`} ayah={ayah} data-ayah-number={ayah.ayah_number} onLongPress={handleLongPress} />
         ))}
       </div>
+      {contextMenuAyah && !showConfirmOverwrite && (
+        <div className="goto-overlay" onClick={handleCancelAll}>
+          <div className="goto-popup" onClick={(e) => e.stopPropagation()}>
+            <div className="last-read-popup-info" style={{ marginBottom: 12, textAlign: 'center' }}>
+              {contextMenuAyah.surahName} · Ayat {contextMenuAyah.ayahNumber}
+            </div>
+            <div className="last-read-popup-actions">
+              <button className="goto-btn" onClick={handleMarkLastRead}>
+                📑 Tandai terakhir dibaca
+              </button>
+              <button className="secondary-btn" onClick={handleCancelAll}>
+                Batal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showConfirmOverwrite && contextMenuAyah && lastRead && (
+        <div className="goto-overlay" onClick={handleCancelAll}>
+          <div className="goto-popup" onClick={(e) => e.stopPropagation()}>
+            <h3 className="last-read-popup-title">Konfirmasi</h3>
+            <p className="last-read-popup-info">
+              Apakah anda yakin untuk merubah{' '}
+              <strong>{lastRead.surahName || `Surah ${lastRead.surahNumber}`} · Ayat {lastRead.ayahNumber}</strong>
+              {' '}menjadi{' '}
+              <strong>{contextMenuAyah.surahName} · Ayat {contextMenuAyah.ayahNumber}</strong>
+              ?
+            </p>
+            <div className="last-read-popup-actions">
+              <button className="goto-btn" onClick={handleConfirmOverwrite}>
+                Ya, Simpan
+              </button>
+              <button className="secondary-btn" onClick={handleCancelAll}>
+                Batal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
 
 const JuzView = ({ number, onBack }) => {
   const { verses, loading, error } = useJuzDetail(number)
+  const navigate = useNavigate()
+  const location = useLocation()
+  const externalScrollDoneRef = useRef(null)
+  const [contextMenuAyah, setContextMenuAyah] = useState(null)
+  const [showConfirmOverwrite, setShowConfirmOverwrite] = useState(false)
+  const lastRead = getLastRead()
+
+  // ── Scroll to ayah from external navigation (e.g. last read) ──
+  useEffect(() => {
+    if (!verses?.length || externalScrollDoneRef.current) return
+    const targetAyah = location.state?.scrollToAyah
+    const targetSurah = location.state?.scrollToSurah
+    if (!targetAyah || !targetSurah) return
+
+    const el = document.getElementById(`juz-ayah-${targetSurah}-${targetAyah}`)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      el.classList.add('ayah-highlight')
+      setTimeout(() => el.classList.remove('ayah-highlight'), 2000)
+    }
+    externalScrollDoneRef.current = true
+    navigate(location.pathname, { replace: true, state: {} })
+  }, [verses, location.state?.scrollToAyah, location.state?.scrollToSurah, location.pathname, navigate])
+
+  // ── Long press → show context menu ────────────────────────────
+  const handleLongPress = useCallback((ayahData) => {
+    setShowConfirmOverwrite(false)
+    setContextMenuAyah({
+      ayahNumber: ayahData.ayah_number,
+      surahNumber: ayahData.surah_number,
+      surahName: ayahData.surah_name || '',
+    })
+  }, [])
+
+  // ── Context menu: "Tandai terakhir dibaca" ────────────────────
+  const handleMarkLastRead = () => {
+    if (lastRead) {
+      setShowConfirmOverwrite(true)
+    } else {
+      saveLastRead({
+        surahNumber: contextMenuAyah.surahNumber,
+        ayahNumber: contextMenuAyah.ayahNumber,
+        surahName: contextMenuAyah.surahName,
+      })
+      setContextMenuAyah(null)
+    }
+  }
+
+  // ── Confirm overwrite ─────────────────────────────────────────
+  const handleConfirmOverwrite = () => {
+    saveLastRead({
+      surahNumber: contextMenuAyah.surahNumber,
+      ayahNumber: contextMenuAyah.ayahNumber,
+      surahName: contextMenuAyah.surahName,
+    })
+    setContextMenuAyah(null)
+    setShowConfirmOverwrite(false)
+  }
+
+  const handleCancelAll = () => {
+    setContextMenuAyah(null)
+    setShowConfirmOverwrite(false)
+  }
 
   if (loading) {
     return (
@@ -270,8 +464,94 @@ const JuzView = ({ number, onBack }) => {
       </div>
       <div className="ayah-list">
         {Array.isArray(verses) && verses.map((ayah, idx) => (
-          <AyahCard key={ayah.id || ayah.ayah_number || idx} ayah={ayah} />
+          <AyahCard key={ayah.id || ayah.ayah_number || idx} id={`juz-ayah-${ayah.surah_number}-${ayah.ayah_number}`} ayah={ayah} data-ayah-number={ayah.ayah_number} data-surah-number={ayah.surah_number} data-surah-name={ayah.surah_name} onLongPress={handleLongPress} />
         ))}
+      </div>
+      {contextMenuAyah && !showConfirmOverwrite && (
+        <div className="goto-overlay" onClick={handleCancelAll}>
+          <div className="goto-popup" onClick={(e) => e.stopPropagation()}>
+            <div className="last-read-popup-info" style={{ marginBottom: 12, textAlign: 'center' }}>
+              {contextMenuAyah.surahName} · Ayat {contextMenuAyah.ayahNumber}
+            </div>
+            <div className="last-read-popup-actions">
+              <button className="goto-btn" onClick={handleMarkLastRead}>
+                📑 Tandai terakhir dibaca
+              </button>
+              <button className="secondary-btn" onClick={handleCancelAll}>
+                Batal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showConfirmOverwrite && contextMenuAyah && lastRead && (
+        <div className="goto-overlay" onClick={handleCancelAll}>
+          <div className="goto-popup" onClick={(e) => e.stopPropagation()}>
+            <h3 className="last-read-popup-title">Konfirmasi</h3>
+            <p className="last-read-popup-info">
+              Apakah anda yakin untuk merubah{' '}
+              <strong>{lastRead.surahName || `Surah ${lastRead.surahNumber}`} · Ayat {lastRead.ayahNumber}</strong>
+              {' '}menjadi{' '}
+              <strong>{contextMenuAyah.surahName} · Ayat {contextMenuAyah.ayahNumber}</strong>
+              ?
+            </p>
+            <div className="last-read-popup-actions">
+              <button className="goto-btn" onClick={handleConfirmOverwrite}>
+                Ya, Simpan
+              </button>
+              <button className="secondary-btn" onClick={handleCancelAll}>
+                Batal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+const LastReadCard = ({ lastRead, onContinue }) => {
+  if (!lastRead) return null
+
+  return (
+    <div className="last-read-card" onClick={onContinue}>
+      <div className="last-read-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="20" height="20">
+          <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H6V4h2v8l2.5-1.5L13 12V4h5v16z" />
+        </svg>
+      </div>
+      <div className="last-read-info">
+        <span className="last-read-label">Terakhir dibaca</span>
+        <span className="last-read-detail">
+          {lastRead.surahName || `Surah ${lastRead.surahNumber}`} · Ayat {lastRead.ayahNumber}
+        </span>
+      </div>
+      <svg className="last-read-chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="20" height="20">
+        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+      </svg>
+    </div>
+  )
+}
+
+const LastReadOverlay = ({ lastRead, onSurahMode, onJuzMode, onClose }) => {
+  return (
+    <div className="goto-overlay" onClick={onClose}>
+      <div className="goto-popup" onClick={(e) => e.stopPropagation()}>
+        <h3 className="last-read-popup-title">Lanjutkan membaca</h3>
+        <p className="last-read-popup-info">
+          {lastRead.surahName || `Surah ${lastRead.surahNumber}`} · Ayat {lastRead.ayahNumber}
+        </p>
+        <div className="last-read-popup-actions">
+          <button className="goto-btn" onClick={onSurahMode}>
+            Buka mode Surah
+          </button>
+          <button className="goto-btn" onClick={onJuzMode}>
+            Buka mode Juz
+          </button>
+          <button className="secondary-btn" onClick={onClose}>
+            Batal
+          </button>
+        </div>
       </div>
     </div>
   )
@@ -297,6 +577,24 @@ const QuranFeature = () => {
   }, [surahNumber, juzNumber, backToJuzList, setHeader, clearHeader])
 
   const [mode, setMode] = useState(() => location.state?.mode || 'surah')
+  const [showLastReadDialog, setShowLastReadDialog] = useState(false)
+  const lastRead = getLastRead()
+
+  const handleLastReadSurah = () => {
+    setShowLastReadDialog(false)
+    navigate(`/quran/${lastRead.surahNumber}`, {
+      state: { scrollToAyah: lastRead.ayahNumber },
+    })
+  }
+
+  const handleLastReadJuz = () => {
+    setShowLastReadDialog(false)
+    const juz = findJuzForAyah(lastRead.surahNumber, lastRead.ayahNumber)
+    if (!juz) return
+    navigate(`/quran/juz/${juz}`, {
+      state: { scrollToAyah: lastRead.ayahNumber, scrollToSurah: lastRead.surahNumber },
+    })
+  }
 
   if (surahNumber) {
     return (
@@ -321,6 +619,9 @@ const QuranFeature = () => {
       <div className="page-header">
         <h2 className="page-title"></h2>
       </div>
+      {lastRead && (
+        <LastReadCard lastRead={lastRead} onContinue={() => setShowLastReadDialog(true)} />
+      )}
       <div className="mode-toggle">
         <button
           className={`mode-btn ${mode === 'surah' ? 'active' : ''}`}
@@ -336,6 +637,14 @@ const QuranFeature = () => {
         </button>
       </div>
       {mode === 'surah' ? <SurahList /> : <JuzList />}
+      {showLastReadDialog && lastRead && (
+        <LastReadOverlay
+          lastRead={lastRead}
+          onSurahMode={handleLastReadSurah}
+          onJuzMode={handleLastReadJuz}
+          onClose={() => setShowLastReadDialog(false)}
+        />
+      )}
     </div>
   )
 }

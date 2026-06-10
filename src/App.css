@@ -767,6 +767,111 @@
   padding-bottom: 12px;
 }
 
+.last-read-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  margin: 0 0 12px;
+  background: linear-gradient(135deg, var(--primary-light, rgba(27, 107, 74, 0.08)), var(--primary-light-2, rgba(27, 107, 74, 0.03)));
+  border: 1px solid var(--primary, #1b6b4a);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text);
+  text-align: left;
+  width: 100%;
+}
+
+.last-read-card:active {
+  transform: scale(0.98);
+  background: linear-gradient(135deg, var(--primary-light, rgba(27, 107, 74, 0.12)), var(--primary-light-2, rgba(27, 107, 74, 0.05)));
+}
+
+.last-read-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary, #1b6b4a);
+  border-radius: 50%;
+  color: #fff;
+}
+
+.last-read-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.last-read-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--primary, #1b6b4a);
+  opacity: 0.8;
+}
+
+.last-read-detail {
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.last-read-chevron {
+  flex-shrink: 0;
+  color: var(--text-muted, #999);
+}
+
+.last-read-popup-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: var(--text);
+}
+
+.last-read-popup-info {
+  font-size: 0.9rem;
+  color: var(--text-muted, #666);
+  margin: 0 0 16px;
+}
+
+.last-read-popup-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.last-read-popup-actions .goto-btn {
+  width: 100%;
+  text-align: center;
+}
+
+.last-read-popup-actions .secondary-btn {
+  width: 100%;
+  text-align: center;
+  padding: 10px 16px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-muted, #666);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.last-read-popup-actions .secondary-btn:active {
+  background: var(--surface-hover, rgba(0,0,0,0.04));
+}
+
 .surah-list {
   display: flex;
   flex-direction: column;
