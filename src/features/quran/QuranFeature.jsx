@@ -99,9 +99,27 @@ const JuzList = () => {
 }
 
 const AyahCard = ({ ayah, id, onLongPress, ...rest }) => {
+  const touchTimer = useRef(null)
+
+  const clearTouch = () => {
+    if (touchTimer.current) {
+      clearTimeout(touchTimer.current)
+      touchTimer.current = null
+    }
+  }
+
+  useEffect(() => () => clearTouch(), [])
+
   const handleContextMenu = (e) => {
     e.preventDefault()
     onLongPress?.(ayah)
+  }
+
+  const handleTouchStart = () => {
+    clearTouch()
+    touchTimer.current = setTimeout(() => {
+      onLongPress?.(ayah)
+    }, 500)
   }
 
   return (
@@ -109,6 +127,9 @@ const AyahCard = ({ ayah, id, onLongPress, ...rest }) => {
       className={`ayah-card ${ayah.ayah_number}`}
       id={id}
       onContextMenu={handleContextMenu}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={clearTouch}
+      onTouchMove={clearTouch}
       {...rest}
     >
       <div className="ayah-num">{ayah.ayah_number}</div>
