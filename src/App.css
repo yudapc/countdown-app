@@ -131,10 +131,10 @@
 /* ─── Bottom Tab Bar ─── */
 
 .bottom-tabs {
-  position: fixed;
-  bottom: 0;
+  /* position: fixed;
+  bottom: 0; */
   left: 50%;
-  transform: translateX(-50%);
+  /* transform: translateX(-50%); */
   z-index: 30;
   width: 100%;
   max-width: 480px;
@@ -150,6 +150,7 @@
   -webkit-backdrop-filter: blur(28px) saturate(1.3);
   border-top: none;
   box-shadow: 0 -1px 20px rgba(30, 46, 36, 0.04);
+  height: 4em;
 }
 
 :root[data-theme='dark'] .bottom-tabs {
