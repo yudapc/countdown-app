@@ -171,9 +171,8 @@ function App() {
   }
 
   const handleRefresh = () => {
-    localStorage.clear()
     if ('caches' in window) {
-      caches.keys().then((names) => names.forEach((n) => caches.delete(n)))
+      caches.keys().then((names) => Promise.all(names.map((n) => caches.delete(n))))
     }
     window.location.reload()
   }
