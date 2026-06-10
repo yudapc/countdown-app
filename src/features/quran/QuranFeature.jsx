@@ -5,7 +5,7 @@ import { useHeader, useAudio } from '../../shared'
 
 const Juz_LIST = Array.from({ length: 30 }, (_, i) => i + 1)
 
-const BISMILLAH = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ'
+const BISMILLAH = 'بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ'
 const stripTashkeel = (s) => s.replace(/[ً-ٰٟ]/g, '')
 
 const SearchInput = ({ value, onChange, placeholder }) => (
