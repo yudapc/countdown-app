@@ -1,5 +1,5 @@
 import '../App.css'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CountdownFeature, CounterCountFeature } from '../features'
 import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import { useCountdown, useLocalStorageState } from '../shared'
@@ -21,32 +21,18 @@ function CountdownIcon() {
 }
 
 function App() {
-  const themeMenuRef = useRef(null)
-  const isRefreshingRef = useRef(false)
   const location = useLocation()
   const { isActive, formattedTime } = useCountdown()
   const [themeMode, setThemeMode] = useLocalStorageState('theme-mode', 'system')
-  const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false)
-  const [pullProgress, setPullProgress] = useState(0)
-  const [isPullRefreshing, setIsPullRefreshing] = useState(false)
-  const [deviceTheme, setDeviceTheme] = useState(() => {
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark'
-    }
-
-    return 'light'
-  })
+  const [deviceTheme, setDeviceTheme] = useState(() =>
+    window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  )
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-color-scheme: dark)')
-    const handleThemeChange = (event) => {
-      setDeviceTheme(event.matches ? 'dark' : 'light')
-    }
-
-    media.addEventListener('change', handleThemeChange)
-    return () => {
-      media.removeEventListener('change', handleThemeChange)
-    }
+    const handler = (e) => setDeviceTheme(e.matches ? 'dark' : 'light')
+    media.addEventListener('change', handler)
+    return () => media.removeEventListener('change', handler)
   }, [])
 
   const activeTheme = themeMode === 'system' ? deviceTheme : themeMode
@@ -55,145 +41,33 @@ function App() {
     document.documentElement.setAttribute('data-theme', activeTheme)
   }, [activeTheme])
 
-  useEffect(() => {
-    const pullThreshold = 90
-    let startY = 0
-    let isPulling = false
-    let hasTriggered = false
-
-    const triggerRefresh = async () => {
-      if (isRefreshingRef.current) {
-        return
-      }
-
-      isRefreshingRef.current = true
-      setIsPullRefreshing(true)
-      setPullProgress(1)
-
-      try {
-        if ('serviceWorker' in navigator) {
-          const registration = await navigator.serviceWorker.getRegistration()
-          if (registration) {
-            await registration.update()
-          }
-        }
-
-        await new Promise((resolve) => {
-          window.setTimeout(resolve, 280)
-        })
-      } finally {
-        window.location.reload()
-      }
-    }
-
-    const handleTouchStart = (event) => {
-      if (window.scrollY > 0 || event.touches.length !== 1) {
-        return
-      }
-
-      startY = event.touches[0].clientY
-      isPulling = true
-      hasTriggered = false
-      setPullProgress(0)
-    }
-
-    const handleTouchMove = (event) => {
-      if (!isPulling || window.scrollY > 0) {
-        return
-      }
-
-      const pullDistance = event.touches[0].clientY - startY
-      if (pullDistance <= 0) {
-        return
-      }
-
-      if (event.cancelable) {
-        event.preventDefault()
-      }
-
-      const normalizedProgress = Math.min(1, pullDistance / pullThreshold)
-      setPullProgress(normalizedProgress)
-
-      if (pullDistance >= pullThreshold && !hasTriggered) {
-        hasTriggered = true
-        triggerRefresh()
-      }
-    }
-
-    const handleTouchEnd = () => {
-      isPulling = false
-      hasTriggered = false
-
-      if (!isRefreshingRef.current) {
-        setPullProgress(0)
-        setIsPullRefreshing(false)
-      }
-    }
-
-    window.addEventListener('touchstart', handleTouchStart, { passive: true })
-    window.addEventListener('touchmove', handleTouchMove, { passive: false })
-    window.addEventListener('touchend', handleTouchEnd)
-    window.addEventListener('touchcancel', handleTouchEnd)
-
-    return () => {
-      window.removeEventListener('touchstart', handleTouchStart)
-      window.removeEventListener('touchmove', handleTouchMove)
-      window.removeEventListener('touchend', handleTouchEnd)
-      window.removeEventListener('touchcancel', handleTouchEnd)
-    }
-  }, [])
+  const toggleTheme = () => {
+    setThemeMode((prev) => {
+      if (prev === 'system') return 'light'
+      if (prev === 'light') return 'dark'
+      return 'system'
+    })
+  }
 
   useEffect(() => {
-    const handleOutsideClick = (event) => {
-      if (!themeMenuRef.current) {
-        return
-      }
-
-      if (!themeMenuRef.current.contains(event.target)) {
-        setIsThemeMenuOpen(false)
-      }
-    }
-
-    if (isThemeMenuOpen) {
-      document.addEventListener('mousedown', handleOutsideClick)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleOutsideClick)
-    }
-  }, [isThemeMenuOpen])
-
-  const menuLinkClassName = ({ isActive }) =>
-    `menu-link ${isActive ? 'menu-link-active' : ''}`
-
-  const themeOptionClassName = (mode) =>
-    `theme-menu-item ${themeMode === mode ? 'theme-menu-item-active' : ''}`
-
-  useEffect(() => {
-    const defaultKeywords =
-      'timer online, countdown online, tasbih online, counter online, stopwatch online, hitung mundur online'
-
     const seoByPath = {
       '/counter': {
-        title: 'Counter Online dan Tasbih Online | Timer Online',
-        description:
-          'Counter online dan tasbih online yang ringan untuk menghitung aktivitas harian dengan cepat.',
+        title: 'Counter Online | Timer Tools',
+        description: 'Counter online untuk menghitung aktivitas harian dengan cepat.',
       },
       '/waktu': {
-        title: 'Countdown Online dan Timer Online | Timer Online',
-        description:
-          'Countdown online dan timer online untuk bantu fokus kerja, belajar, olahraga, dan rutinitas harian.',
+        title: 'Countdown Online | Timer Tools',
+        description: 'Countdown online untuk fokus kerja, belajar, dan rutinitas harian.',
       },
       default: {
-        title: 'Timer Online, Countdown Online, Tasbih Online',
-        description:
-          'Aplikasi timer online serbaguna berisi countdown online, counter, dan tasbih online dalam satu tempat.',
+        title: 'Timer Tools - Counter & Countdown Online',
+        description: 'Aplikasi timer online untuk countdown dan counter.',
       },
     }
 
     const currentSeo = seoByPath[location.pathname] || seoByPath.default
 
-    const setMetaByName = (name, content) => {
+    const setMeta = (name, content) => {
       let tag = document.head.querySelector(`meta[name="${name}"]`)
       if (!tag) {
         tag = document.createElement('meta')
@@ -203,7 +77,7 @@ function App() {
       tag.setAttribute('content', content)
     }
 
-    const setMetaByProperty = (property, content) => {
+    const setOG = (property, content) => {
       let tag = document.head.querySelector(`meta[property="${property}"]`)
       if (!tag) {
         tag = document.createElement('meta')
@@ -223,118 +97,58 @@ function App() {
     canonical.setAttribute('href', canonicalHref)
 
     document.title = currentSeo.title
-    setMetaByName('description', currentSeo.description)
-    setMetaByName('keywords', defaultKeywords)
-    setMetaByName('twitter:title', currentSeo.title)
-    setMetaByName('twitter:description', currentSeo.description)
-    setMetaByProperty('og:title', currentSeo.title)
-    setMetaByProperty('og:description', currentSeo.description)
-    setMetaByProperty('og:url', canonicalHref)
+    setMeta('description', currentSeo.description)
+    setOG('title', currentSeo.title)
+    setOG('description', currentSeo.description)
+    setOG('url', canonicalHref)
   }, [location.pathname])
 
-  const isWaktuPage = location.pathname === '/waktu' || location.pathname === '/countdown'
+  const isCountdownPage = location.pathname === '/waktu'
 
   return (
     <div className="app-shell">
-      <div
-        className={`pull-refresh-indicator ${pullProgress > 0 || isPullRefreshing ? 'visible' : ''} ${isPullRefreshing ? 'refreshing' : ''}`}
-        style={{ '--pull-progress': pullProgress }}
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M12 4a8 8 0 1 0 7.38 11h-2.2A6 6 0 1 1 12 6v3l4-4-4-4v3Z" />
-        </svg>
-      </div>
-
       <header className="app-header">
-        <div className="header-inner">
-          <h1 className="app-title">Tools</h1>
-          <div className="theme-switcher" ref={themeMenuRef}>
-            <span className="theme-label" />
-            <div className="theme-menu-wrap">
-              <button
-                type="button"
-                className="theme-gear-btn"
-                onClick={() => setIsThemeMenuOpen((prev) => !prev)}
-                aria-label="Buka pengaturan theme"
-                aria-expanded={isThemeMenuOpen}
-              >
-                ⚙
-              </button>
-
-              {isThemeMenuOpen && (
-                <div className="theme-popup-menu" role="menu" aria-label="Theme menu">
-                  <button
-                    type="button"
-                    className={themeOptionClassName('system')}
-                    onClick={() => {
-                      setThemeMode('system')
-                      setIsThemeMenuOpen(false)
-                    }}
-                  >
-                    Device
-                  </button>
-
-                  <button
-                    type="button"
-                    className={themeOptionClassName('light')}
-                    onClick={() => {
-                      setThemeMode('light')
-                      setIsThemeMenuOpen(false)
-                    }}
-                  >
-                    Light
-                  </button>
-
-                  <button
-                    type="button"
-                    className={themeOptionClassName('dark')}
-                    onClick={() => {
-                      setThemeMode('dark')
-                      setIsThemeMenuOpen(false)
-                    }}
-                  >
-                    Dark
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
+        <h1>Timer Tools</h1>
+        <div className="header-actions">
+          <button
+            className="theme-btn"
+            onClick={toggleTheme}
+            aria-label={`Tema: ${themeMode}`}
+          >
+            {activeTheme === 'dark' ? '☀️' : '🌙'}
+          </button>
         </div>
       </header>
 
-      <div className="menu-dock">
-        <nav className="top-menu" aria-label="Main navigation">
-          <NavLink to="/counter" className={menuLinkClassName}>
-            <CounterIcon />
-            <span className="menu-link-label">Counter</span>
-          </NavLink>
-          <NavLink to="/waktu" className={menuLinkClassName}>
-            <CountdownIcon />
-            <span className="menu-link-label">Waktu</span>
-          </NavLink>
-        </nav>
-      </div>
+      <main className="app-main">
+        <div className="tab-content" key={location.pathname}>
+          <Routes>
+            <Route path="/" element={<Navigate to="/counter" replace />} />
+            <Route path="/counter" element={<CounterCountFeature />} />
+            <Route path="/waktu" element={<CountdownFeature />} />
+            <Route path="/countdown" element={<Navigate to="/waktu" replace />} />
+            <Route path="*" element={<Navigate to="/counter" replace />} />
+          </Routes>
+        </div>
+      </main>
 
-      {isActive && !isWaktuPage && (
-        <NavLink to="/waktu" className="floating-countdown-chip">
-          <span className="floating-countdown-label">Hitung Mundur</span>
-          <strong>{formattedTime}</strong>
+      {isActive && !isCountdownPage && (
+        <NavLink to="/waktu" className="countdown-chip">
+          <span className="countdown-chip-label">Hitung Mundur</span>
+          <span className="countdown-chip-time">{formattedTime}</span>
         </NavLink>
       )}
 
-      <main className="app-main">
-        <div className="card app-card">
-          <div className="feature-panel">
-            <Routes>
-              <Route path="/" element={<Navigate to="/counter" replace />} />
-              <Route path="/counter" element={<CounterCountFeature />} />
-              <Route path="/waktu" element={<CountdownFeature />} />
-              <Route path="/countdown" element={<Navigate to="/waktu" replace />} />
-              <Route path="*" element={<Navigate to="/counter" replace />} />
-            </Routes>
-          </div>
-        </div>
-      </main>
+      <nav className="bottom-tabs">
+        <NavLink to="/counter" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
+          <CounterIcon />
+          <span>Counter</span>
+        </NavLink>
+        <NavLink to="/waktu" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
+          <CountdownIcon />
+          <span>Waktu</span>
+        </NavLink>
+      </nav>
     </div>
   )
 }

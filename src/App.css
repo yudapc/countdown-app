@@ -1,659 +1,508 @@
+/* ─── App Shell ─── */
+
 .app-shell {
   width: 100%;
-  min-height: 100vh;
-  padding: 0;
-  background:
-    radial-gradient(circle at top right, rgba(248, 160, 95, 0.25), transparent 42%),
-    radial-gradient(circle at bottom left, rgba(62, 166, 185, 0.22), transparent 46%),
-    linear-gradient(180deg, #f5f6f8, #eef3f8 44%, #e8eef6 100%);
+  max-width: 480px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
 }
 
-.pull-refresh-indicator {
-  --pull-progress: 0;
-  position: fixed;
-  top: 8px;
-  left: 50%;
-  z-index: 80;
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #c9d9e8;
-  color: #1f4f69;
-  background: rgba(247, 252, 255, 0.94);
-  box-shadow: 0 10px 26px rgba(17, 49, 80, 0.2);
-  opacity: 0;
-  transform: translate(-50%, calc(-140% + (var(--pull-progress) * 70px)));
-  transition: opacity 0.18s ease, transform 0.18s ease;
-  pointer-events: none;
-}
-
-.pull-refresh-indicator.visible {
-  opacity: 1;
-}
-
-.pull-refresh-indicator svg {
-  width: 20px;
-  height: 20px;
-  fill: currentColor;
-  transform: rotate(calc(var(--pull-progress) * 180deg));
-  transition: transform 0.16s ease;
-}
-
-.pull-refresh-indicator.refreshing {
-  transform: translate(-50%, 6px);
-}
-
-.pull-refresh-indicator.refreshing svg {
-  animation: pull-refresh-spin 0.75s linear infinite;
-}
-
-@keyframes pull-refresh-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+/* ─── Header ─── */
 
 .app-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 40;
-  border-bottom: 1px solid #d5e0eb;
-  background: rgba(245, 250, 255, 0.84);
-  backdrop-filter: blur(8px);
-}
-
-.header-inner {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 10px 12px;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  padding: 8px 20px 4px;
+  padding-top: calc(8px + var(--safe-top, 0px));
+  min-height: 52px;
 }
 
-.app-title {
-  margin: 0;
-  font-size: 1.05rem;
-  color: #0c2f44;
-}
-
-.app-main {
-  min-height: 100vh;
-  padding: 132px 10px max(22px, env(safe-area-inset-bottom));
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-}
-
-.menu-dock {
-  position: fixed;
-  top: 62px;
-  left: 0;
-  right: 0;
-  z-index: 35;
-  border-bottom: 1px solid #d5e0eb;
-  background: rgba(245, 250, 255, 0.9);
-  backdrop-filter: blur(8px);
-}
-
-.top-menu {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 6px 10px;
-  display: flex;
-  gap: 8px;
-}
-
-.top-menu .menu-link {
-  flex: 1 1 0;
-  min-height: 48px;
-  border-radius: 14px;
-  padding: 7px 12px;
-}
-
-.top-menu .menu-link {
-  flex-direction: column;
-  gap: 4px;
-  line-height: 1;
-}
-
-.top-menu .menu-link svg {
-  width: 20px;
-  height: 20px;
-  fill: currentColor;
-  flex: 0 0 auto;
-}
-
-.menu-link-label {
-  display: block;
-}
-
-.app-card {
-  width: min(720px, 100%);
-  padding: 14px 12px;
-  border-radius: 16px;
-  text-align: center;
-  background: rgba(250, 252, 255, 0.9);
-  border: 1px solid #d6e0ec;
-  box-shadow: 0 20px 50px rgba(18, 44, 73, 0.14);
-  backdrop-filter: blur(4px);
-  margin-top: 40px;
-}
-
-.product-eyebrow {
-  margin: 0;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-size: 0.72rem;
-  color: #2a6b7f;
+.app-header h1 {
+  font-size: 1.15rem;
   font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
 }
 
-.app-card h1 {
-  margin: 8px 0 8px;
-  font-size: clamp(1.7rem, 4.6vw, 2.6rem);
-  line-height: 1.1;
-  color: #0c2f44;
-}
-
-.product-subtitle {
-  margin: 0 auto 18px;
-  max-width: 52ch;
-  font-size: 0.96rem;
-  color: #445a6d;
-}
-
-.theme-switcher {
+.header-actions {
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
-  margin: 0;
-}
-
-.theme-label {
-  font-size: 0.9rem;
-  font-weight: 650;
-  color: #325368;
-}
-
-.theme-menu-wrap {
-  position: relative;
-}
-
-.theme-gear-btn {
-  min-height: 42px;
-  min-width: 42px;
-  border-radius: 12px;
-  border: 1px solid #c9d7e6;
-  padding: 0;
-  background: linear-gradient(180deg, #f9fcff, #f3f8ff);
-  color: #1f4660;
-  font-size: 1.05rem;
-}
-
-.theme-popup-menu {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 8px);
-  z-index: 30;
-  min-width: 160px;
-  border-radius: 12px;
-  border: 1px solid #d4deea;
-  background: #f7fbff;
-  box-shadow: 0 18px 38px rgba(6, 21, 40, 0.18);
-  padding: 6px;
-  display: grid;
   gap: 6px;
 }
 
-.theme-menu-item {
-  text-align: left;
-  border-radius: 10px;
-  border: 1px solid #d5dfeb;
-  background: #ffffff;
-  padding: 8px 10px;
-  min-height: 38px;
-  font-weight: 650;
-  color: #214660;
-}
-
-.theme-menu-item-active {
-  border-color: #ff914d;
-  box-shadow: 0 6px 12px rgba(255, 145, 77, 0.2);
-  background: linear-gradient(180deg, #fff9f4, #ffffff);
-}
-
-.menu-link {
-  display: inline-flex;
-  justify-content: center;
+.theme-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  display: flex;
   align-items: center;
-  flex: 1 1 180px;
-  min-height: 44px;
-  padding: 10px 14px;
-  border-radius: 999px;
-  border: 1px solid #cedae7;
-  background: #f8fbff;
-  color: #1e445d;
-  font-weight: 650;
-  font-size: 0.95rem;
-  text-decoration: none;
+  justify-content: center;
+  font-size: 1.15rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
   transition: all 0.2s ease;
 }
 
-.menu-link:hover {
-  border-color: #3abca6;
-  transform: translateY(-1px);
+.theme-btn:active {
+  transform: scale(0.9);
+  background: var(--surface-alt);
 }
 
-.menu-link-active {
-  border-color: #ff914d;
-  background: linear-gradient(135deg, #fffbf5, #ffffff 55%);
-  color: #7b420d;
-  box-shadow: 0 8px 16px rgba(255, 145, 77, 0.24);
+/* ─── Main Content ─── */
+
+.app-main {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 4px 16px 0;
+  scroll-behavior: smooth;
 }
 
-.feature-panel {
-  padding: 10px;
-  border-radius: 16px;
-  border: 1px solid #dce5ef;
-  background: #f8fbff;
+.app-main::-webkit-scrollbar {
+  display: none;
 }
 
-.floating-countdown-chip {
-  position: fixed;
-  top: 132px;
-  right: 8px;
-  z-index: 20;
+/* ─── Tab Content ─── */
+
+.tab-content {
+  animation: tab-slide 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes tab-slide {
+  from {
+    opacity: 0.5;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ─── Bottom Tab Bar ─── */
+
+.bottom-tabs {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 16px;
+  padding-bottom: calc(6px + var(--safe-bottom, 0px));
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 20px rgba(28, 24, 22, 0.06);
+}
+
+.tab-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+}
+
+.tab-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.tab-btn span {
+  transition: transform 0.3s ease;
+}
+
+.tab-btn:active {
+  transform: scale(0.95);
+}
+
+.tab-btn.active {
+  color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.tab-btn.active svg {
+  transform: scale(1.1);
+}
+
+/* ─── Counter ─── */
+
+.counter-page {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  min-width: 120px;
-  padding: 7px 10px;
-  border-radius: 12px;
-  border: 1px solid #fac8a3;
-  color: #6b3106;
-  background: linear-gradient(180deg, #fff9f4, #fffefb);
-  box-shadow: 0 8px 20px rgba(255, 145, 77, 0.25);
-  text-decoration: none;
+  align-items: center;
+  height: 100%;
+  padding-top: 100px;
 }
 
-.floating-countdown-label {
-  font-size: 0.66rem;
+.counter-top {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.counter-bottom {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding-bottom: 16px;
+}
+
+.counter-display {
+  font-size: clamp(4rem, 20vw, 7rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--text);
+  line-height: 1;
+  margin: 10px 0;
+  font-variant-numeric: tabular-nums;
+  transition: transform 0.15s ease;
+}
+
+.counter-display.bump {
+  animation: number-bump 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.counter-label {
+  font-size: 1rem;
+  color: var(--text);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.counter-plus-btn {
+  width: 100%;
+  max-width: 340px;
+  min-height: 80px;
+  border-radius: var(--radius-lg);
+  font-size: 2.2rem;
+  font-weight: 700;
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 8px 24px rgba(196, 98, 62, 0.3);
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.counter-plus-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 4px 12px rgba(196, 98, 62, 0.2);
+}
+
+:root[data-theme='dark'] .counter-plus-btn {
+  box-shadow: 0 8px 24px rgba(240, 168, 108, 0.2);
+}
+
+:root[data-theme='dark'] .counter-plus-btn:active {
+  box-shadow: 0 4px 12px rgba(240, 168, 108, 0.15);
+}
+
+.counter-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.counter-icon-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.counter-icon-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.counter-icon-btn:active {
+  transform: scale(0.88);
+  background: var(--surface-alt);
+}
+
+.counter-icon-btn:disabled {
+  opacity: 0.3;
+  transform: none;
+}
+
+:root[data-theme='dark'] .counter-icon-btn {
+  color: #ffffff;
+}
+
+/* ─── Countdown ─── */
+
+.countdown-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100% - 20px);
+  gap: 16px;
+  padding: 10px 0 20px;
+}
+
+.countdown-ring-wrap {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.countdown-ring-bg {
+  position: absolute;
+  inset: 0;
+}
+
+.countdown-ring-bg circle {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 6;
+}
+
+.countdown-ring-fg {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-90deg);
+}
+
+.countdown-ring-fg circle {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 6;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.countdown-center {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.countdown-time {
+  font-family: var(--font-mono);
+  font-size: clamp(2.2rem, 10vw, 3rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.countdown-status {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-@media (max-width: 640px) {
-  .header-inner {
-    padding: 8px 10px;
-  }
-
-  .menu-dock {
-    top: 56px;
-  }
-
-  .top-menu {
-    padding: 5px 8px;
-  }
-
-  .top-menu .menu-link {
-    min-height: 46px;
-    padding: 6px 10px;
-  }
-
-  .app-main {
-    padding: 122px 10px max(18px, env(safe-area-inset-bottom));
-  }
-
-  .floating-countdown-chip {
-    top: 118px;
-  }
-}
-
-.countdown-feature {
+.countdown-input-wrap {
   width: 100%;
+  max-width: 280px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  align-items: center;
-}
-
-.countdown-header {
-  width: 100%;
-  padding: 14px;
-  border-radius: 14px;
-  border: 1px solid #e6eef7;
-  background: linear-gradient(180deg, #fcfeff, #f7fbff);
-}
-
-.countdown-caption {
-  margin: 0;
-  color: #668090;
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.countdown-time {
-  margin: 4px 0;
-  color: #0d3e5b;
-  font-size: clamp(1.8rem, 8vw, 2.6rem);
-  line-height: 1.1;
-}
-
-.countdown-status {
-  margin: 0;
-  font-size: 0.86rem;
-  color: #4f6879;
-}
-
-.countdown-message {
-  margin: 0;
-  font-size: 1rem;
-  color: #355469;
-  font-weight: 600;
-}
-
-.countdown-actions {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-  flex-wrap: wrap;
-}
-
-.countdown-action-btn {
-  min-height: 48px;
-}
-
-.countdown-stop-btn {
-  border-color: #f0b89b;
-  color: #8a3908;
-  background: linear-gradient(180deg, #fff6f0, #fffdfb);
-}
-
-.countdown-start-btn {
-  width: 100%;
-  background: linear-gradient(180deg, #d1f7e0, #b0f0c8);
-  color:#1b5e3c
+  gap: 8px;
 }
 
 .countdown-input {
   width: 100%;
-  min-height: 48px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid #d7e3ee;
-  font-size: 1rem;
-  color: #19394d;
-  background: #ffffff;
-  text-align: center;
-}
-
-.countdown-input-hint {
-  width: 100%;
-  margin-top: -2px;
-  text-align: left;
-  color: #658093;
-  font-size: 0.78rem;
-  text-align: center;
-}
-
-.counter-action-btn {
-  flex: 1 1 120px;
-  min-height: 48px;
-  min-width: 0;
-  font-size: 1.08rem;
-  font-weight: 700;
-  border-radius: 14px;
-}
-
-.counter-reset-btn {
-  flex-basis: 100%;
-  border-color: #f0b89b;
-  color: #8a3908;
-  background: linear-gradient(180deg, #fff6f0, #fffdfb);
-}
-
-.counter-touch-layout {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-
-.counter-secondary-actions {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-}
-
-.counter-icon-btn {
-  width: 52px;
-  height: 52px;
   min-height: 52px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-}
-
-.counter-icon-btn svg {
-  width: 24px;
-  height: 24px;
-  fill: currentColor;
-}
-
-.counter-minus-btn {
-  width: 44px;
-  height: 44px;
-  min-height: 44px;
-  font-size: 1.3rem;
-  font-weight: 800;
-}
-
-.counter-reset-btn {
-  width: 44px;
-  height: 44px;
-  min-height: 44px;
-  flex-basis: auto;
-}
-
-.counter-reset-btn svg {
-  width: 20px;
-  height: 20px;
-}
-
-.counter-primary-plus-btn {
-  width: 100%;
-  min-height: 74px;
-  border-radius: 18px;
-  font-size: 2rem;
-  font-weight: 800;
-  border-color: #35b39e;
-  color: #0d4a41;
-  background: linear-gradient(180deg, #d2f8e7, #b8f1d7);
-  box-shadow: 0 14px 24px rgba(53, 179, 158, 0.24);
-}
-
-.counter-primary-plus-btn:hover {
-  border-color: #2f9e8c;
-  box-shadow: 0 16px 28px rgba(47, 158, 140, 0.26);
-}
-
-.counter-side-actions {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.counter-side-actions .counter-action-btn {
-  width: 100%;
-  min-height: 56px;
-  font-size: 1.12rem;
-}
-
-.copyright-text {
-  margin: 0;
-  font-size: 0.68rem;
+  padding: 0 16px;
+  border-radius: var(--radius);
+  font-size: 1.05rem;
+  font-weight: 500;
   text-align: center;
-  color: #6f8291;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  color: var(--text);
+  transition: border-color 0.2s ease;
 }
 
-.countdown-header {
-  padding: 12px;
+.countdown-input:focus {
+  border-color: var(--primary);
 }
 
-.countdown-actions {
-  gap: 8px;
+.countdown-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.countdown-hint {
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+  text-align: center;
+  font-weight: 500;
 }
 
 .countdown-action-btn {
-  flex: 1 1 100%;
   width: 100%;
+  max-width: 280px;
   min-height: 52px;
-}
-
-.counter-action-btn {
-  flex: 1 1 100%;
-  width: 100%;
-  min-height: 52px;
+  border-radius: var(--radius);
   font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.counter-side-actions .counter-action-btn {
-  min-height: 58px;
-  font-size: 1.14rem;
+.countdown-action-btn:active {
+  transform: scale(0.96);
 }
 
-.counter-primary-plus-btn {
-  min-height: 78px;
-  font-size: 2.1rem;
+.countdown-action-btn.start-btn {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 6px 20px rgba(196, 98, 62, 0.25);
 }
 
-:root[data-theme='dark'] .app-shell {
-  background:
-    radial-gradient(circle at top right, rgba(120, 72, 34, 0.26), transparent 40%),
-    radial-gradient(circle at bottom left, rgba(20, 110, 96, 0.24), transparent 44%),
-    linear-gradient(180deg, #0b1220, #111a2c 44%, #0f1728 100%);
+:root[data-theme='dark'] .countdown-action-btn.start-btn {
+  box-shadow: 0 6px 20px rgba(240, 168, 108, 0.15);
 }
 
-:root[data-theme='dark'] .pull-refresh-indicator {
-  border-color: #30425d;
-  color: #cbe3f6;
-  background: rgba(18, 30, 48, 0.92);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.36);
+.countdown-action-btn.stop-btn {
+  background: var(--surface);
+  color: var(--text-secondary);
+  border: 1.5px solid var(--border);
 }
 
-:root[data-theme='dark'] .app-header,
-:root[data-theme='dark'] .menu-dock {
-  background: rgba(15, 24, 39, 0.88);
-  border-color: #2a3a53;
+/* ─── Floating Countdown Chip ─── */
+
+.countdown-chip {
+  position: fixed;
+  z-index: 50;
+  top: calc(56px + var(--safe-top, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px 8px 14px;
+  border-radius: var(--radius-full);
+  background: var(--primary-soft);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  text-decoration: none;
+  box-shadow: var(--shadow);
+  animation: chip-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: nowrap;
 }
 
-:root[data-theme='dark'] .app-card {
-  background: rgba(12, 20, 34, 0.9);
-  border-color: #223148;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+.countdown-chip:active {
+  transform: translateX(-50%) scale(0.95);
 }
 
-:root[data-theme='dark'] .app-card h1 {
-  color: #e8eef8;
+@keyframes chip-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(16px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
 }
 
-:root[data-theme='dark'] .app-title {
-  color: #e8eef8;
+.countdown-chip-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  opacity: 0.75;
 }
 
-:root[data-theme='dark'] .product-subtitle,
-:root[data-theme='dark'] .countdown-status,
-:root[data-theme='dark'] .countdown-caption,
-:root[data-theme='dark'] .copyright-text,
-:root[data-theme='dark'] .countdown-input-hint,
-:root[data-theme='dark'] .theme-label {
-  color: #9db0c3;
+.countdown-chip-time {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
-:root[data-theme='dark'] .menu-link,
-:root[data-theme='dark'] .theme-gear-btn {
-  background: #172437;
-  border-color: #2c3c55;
-  color: #dbe6f4;
+/* ─── Empty state ─── */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 30px 0;
+  color: var(--text-tertiary);
 }
 
-:root[data-theme='dark'] .theme-popup-menu {
-  background: #101a2d;
-  border-color: #2a3a53;
+.empty-state svg {
+  width: 40px;
+  height: 40px;
+  fill: currentColor;
+  opacity: 0.4;
+  margin-bottom: 4px;
 }
 
-:root[data-theme='dark'] .theme-menu-item {
-  color: #e4eef8;
+.empty-state p {
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
-:root[data-theme='dark'] .theme-menu-item {
-  background: #172437;
-  border-color: #2c3c55;
-}
+/* ─── Responsive ─── */
 
-:root[data-theme='dark'] .theme-menu-item-active {
-  border-color: #f3a36d;
-  background: linear-gradient(135deg, #3a2b1f, #2a2220 55%);
-}
+@media (min-width: 481px) {
+  .app-shell {
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    margin: 0 auto;
+  }
 
-:root[data-theme='dark'] .menu-link-active {
-  border-color: #f3a36d;
-  color: #ffe1cb;
-  background: linear-gradient(135deg, #3a2b1f, #2a2220 55%);
-}
+  body {
+    background: #e6e2dc;
+  }
 
-:root[data-theme='dark'] .feature-panel,
-:root[data-theme='dark'] .countdown-header {
-  background: #131f33;
-  border-color: #2a3a53;
-}
-
-:root[data-theme='dark'] .countdown-time,
-:root[data-theme='dark'] .countdown-message {
-  color: #dce9f9;
-}
-
-:root[data-theme='dark'] .countdown-input {
-  color: #eaf1fb;
-  background: #101a2c;
-  border-color: #2c3c55;
-}
-
-:root[data-theme='dark'] .floating-countdown-chip {
-  border-color: #866044;
-  color: #ffd6ba;
-  background: linear-gradient(180deg, #3f2f23, #31261f);
-}
-
-:root[data-theme='dark'] .countdown-stop-btn,
-:root[data-theme='dark'] .counter-reset-btn {
-  border-color: #84593f;
-  color: #ffd4bd;
-  background: linear-gradient(180deg, #3c2d24, #322721);
-}
-
-:root[data-theme='dark'] .countdown-start-btn {
-  color: green;
-}
-
-:root[data-theme='dark'] .counter-primary-plus-btn {
-  border-color: #3eb29d;
-  color: #d4fff3;
-  background: linear-gradient(180deg, #1e5448, #1a443a);
-  box-shadow: 0 14px 24px rgba(0, 0, 0, 0.36);
+  :root[data-theme='dark'] body {
+    background: #0a0a0e;
+  }
 }

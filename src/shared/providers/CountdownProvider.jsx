@@ -12,6 +12,7 @@ const formatCountdown = (totalSeconds) => {
 
 const CountdownProvider = ({ children }) => {
   const [endAt, setEndAt] = useLocalStorageState('countdown-end-at', null)
+  const [startedAt, setStartedAt] = useLocalStorageState('countdown-started-at', null)
   const [now, setNow] = useState(Date.now())
   const previousRemainingRef = useRef(0)
   const hasHydratedRef = useRef(false)
@@ -113,8 +114,13 @@ const CountdownProvider = ({ children }) => {
   useEffect(() => {
     if (endAt && remainingSeconds === 0) {
       setEndAt(null)
+      setStartedAt(null)
     }
-  }, [endAt, remainingSeconds, setEndAt])
+  }, [endAt, remainingSeconds, setEndAt, setStartedAt])
+
+  const totalMs = startedAt && endAt ? Number(endAt) - Number(startedAt) : 0
+  const elapsedMs = startedAt ? now - Number(startedAt) : 0
+  const progress = totalMs > 0 ? Math.min(1, Math.max(0, elapsedMs / totalMs)) : 0
 
   const startCountdown = (minutes) => {
     const nextMinutes = Number(minutes)
@@ -124,20 +130,24 @@ const CountdownProvider = ({ children }) => {
 
     isManualStopRef.current = false
     unlockAudioPlayback()
+    const nowMs = Date.now()
     const durationMs = Math.floor(nextMinutes * 60 * 1000)
-    const target = Date.now() + durationMs
+    const target = nowMs + durationMs
+    setStartedAt(nowMs)
     setEndAt(target)
   }
 
   const stopCountdown = () => {
     isManualStopRef.current = true
     setEndAt(null)
+    setStartedAt(null)
   }
 
   const value = {
     isActive: Boolean(endAt) && remainingSeconds > 0,
     remainingSeconds,
     formattedTime: formatCountdown(remainingSeconds),
+    progress,
     startCountdown,
     stopCountdown,
   }

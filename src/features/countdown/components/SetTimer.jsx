@@ -1,44 +1,36 @@
-import React, { memo, useEffect, useState } from 'react';
-import { CenteredColumn } from '../../../shared';
+import { memo, useEffect, useState } from 'react'
 
 const SetTimer = ({ initialValue = 0, onStart }) => {
   const [valueInput, setValueInput] = useState(
     Number(initialValue) > 0 ? String(initialValue) : ''
-  );
+  )
 
   useEffect(() => {
-    setValueInput(Number(initialValue) > 0 ? String(initialValue) : '');
-  }, [initialValue]);
+    setValueInput(Number(initialValue) > 0 ? String(initialValue) : '')
+  }, [initialValue])
 
-  const handleChangeMinutes = (event) => {
-    const inputValue = event.target.value;
-    if (inputValue === '') {
-      setValueInput('');
-      return;
+  const handleChange = (e) => {
+    const v = e.target.value
+    if (v === '') {
+      setValueInput('')
+      return
     }
-
-    const nextValue = Number(inputValue);
-    if (!Number.isNaN(nextValue) && nextValue >= 0) {
-      setValueInput(inputValue);
-      return;
+    const n = Number(v)
+    if (!Number.isNaN(n) && n >= 0) {
+      setValueInput(v)
     }
+  }
 
-    alert('Please enter a valid number');
-  };
-
-  const numericValue = Number(valueInput);
-  const canStart = valueInput !== '' && !Number.isNaN(numericValue) && numericValue > 0;
+  const num = Number(valueInput)
+  const canStart = valueInput !== '' && !Number.isNaN(num) && num > 0
 
   const handleStart = () => {
-    if (!canStart) {
-      return;
-    }
-
-    onStart(numericValue);
-  };
+    if (!canStart) return
+    onStart(num)
+  }
 
   return (
-    <CenteredColumn style={{ marginTop: '0px', justifyContent: 'center', width: '100%' }}>
+    <div className="countdown-input-wrap animate-in">
       <input
         className="countdown-input"
         type="number"
@@ -46,18 +38,19 @@ const SetTimer = ({ initialValue = 0, onStart }) => {
         step="1"
         placeholder="Masukkan menit"
         value={valueInput}
-        onChange={handleChangeMinutes}
+        onChange={handleChange}
+        autoFocus
       />
-      <small className="countdown-input-hint">Satuan input adalah menit.</small>
+      <span className="countdown-hint">Masukkan durasi dalam menit</span>
       <button
-        className="countdown-action-btn countdown-start-btn"
+        className="countdown-action-btn start-btn"
         onClick={handleStart}
         disabled={!canStart}
       >
         Mulai
       </button>
-    </CenteredColumn>
-  );
-};
+    </div>
+  )
+}
 
-export default memo(SetTimer);
+export default memo(SetTimer)
