@@ -18,16 +18,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 15px 4px;
+  padding: 8px 16px 4px;
   padding-top: calc(8px + env(safe-area-inset-top));
   min-height: 52px;
+  z-index: 10;
 }
 
 .app-header h1 {
-  font-size: 1.15rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--text);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
 }
 
 .header-actions {
@@ -38,7 +40,7 @@
 .header-back-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex: 1;
   min-width: 0;
 }
@@ -46,7 +48,7 @@
 .header-back-btn {
   width: 36px;
   height: 36px;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -54,7 +56,7 @@
   border: 1px solid var(--border);
   color: var(--text-secondary);
   flex-shrink: 0;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .header-back-btn svg {
@@ -64,7 +66,7 @@
 }
 
 .header-back-btn:active {
-  transform: scale(0.9);
+  transform: scale(0.88);
   background: var(--surface-alt);
 }
 
@@ -80,19 +82,19 @@
 .theme-btn {
   width: 38px;
   height: 38px;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text-secondary);
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .theme-btn:active {
-  transform: scale(0.9);
+  transform: scale(0.88);
   background: var(--surface-alt);
 }
 
@@ -103,13 +105,11 @@
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: none;
-  padding: 4px 16px 72px;
+  padding: 2px 16px 72px;
   scroll-behavior: smooth;
 }
 
-.app-main::-webkit-scrollbar {
-  display: none;
-}
+.app-main::-webkit-scrollbar { display: none; }
 
 /* ─── Tab Content ─── */
 
@@ -120,7 +120,7 @@
 @keyframes tab-slide {
   from {
     opacity: 0.5;
-    transform: translateX(24px);
+    transform: translateX(20px);
   }
   to {
     opacity: 1;
@@ -141,56 +141,72 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 8px 16px;
-  padding-bottom: calc(8px + env(safe-area-inset-bottom));
-  background: rgba(240, 242, 235, 0.72);
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
-  border-top: 0.5px solid rgba(221, 228, 214, 0.5);
-  box-shadow: 0 -4px 20px rgba(26, 46, 31, 0.06);
+  gap: 2px;
+  padding: 6px 12px;
+  padding-bottom: calc(6px + env(safe-area-inset-bottom));
+  background: rgba(247, 245, 240, 0.7);
+  backdrop-filter: blur(28px) saturate(1.3);
+  -webkit-backdrop-filter: blur(28px) saturate(1.3);
+  border-top: none;
+  box-shadow: 0 -1px 20px rgba(30, 46, 36, 0.04);
 }
 
 :root[data-theme='dark'] .bottom-tabs {
-  background: rgba(15, 26, 18, 0.78);
-  border-top: 0.5px solid rgba(36, 48, 40, 0.5);
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+  background: rgba(15, 26, 18, 0.7);
+  border-top: none;
+  box-shadow: 0 -1px 20px rgba(0, 0, 0, 0.15);
 }
 
 .tab-btn {
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 10px;
-  border-radius: var(--radius-sm);
-  font-size: 0.85rem;
-  font-weight: 600;
+  padding: 6px 8px 4px;
+  border-radius: 12px;
   color: var(--text-tertiary);
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
+  gap: 2px;
 }
 
 .tab-btn svg {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   fill: currentColor;
   flex-shrink: 0;
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.tab-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--primary);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .tab-btn:active {
-  transform: scale(0.95);
+  transform: scale(0.92);
 }
 
 .tab-btn.active {
   color: var(--primary);
-  background: var(--primary-soft);
 }
 
 .tab-btn.active svg {
-  transform: scale(1.1);
+  transform: scale(1.1) translateY(-1px);
+}
+
+.tab-btn.active::after {
+  transform: translateX(-50%) scaleX(1);
 }
 
 /* ─── Page Header ─── */
@@ -199,15 +215,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
-  padding-top: 8px;
+  margin-bottom: 14px;
+  padding-top: 10px;
 }
 
 .page-title {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: -0.02em;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 /* ─── Search Input ─── */
@@ -218,14 +235,15 @@
   gap: 10px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 14px;
   padding: 0 14px;
   margin-bottom: 12px;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .search-wrap:focus-within {
   border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
 }
 
 .search-icon {
@@ -254,10 +272,10 @@
 
 .mode-toggle {
   display: flex;
-  gap: 4px;
+  gap: 3px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-radius: 12px;
   padding: 3px;
   margin-bottom: 14px;
 }
@@ -265,28 +283,30 @@
 .mode-btn {
   flex: 1;
   min-height: 36px;
-  border-radius: 8px;
-  font-size: 0.82rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-tertiary);
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .mode-btn.active {
   background: var(--primary);
   color: white;
+  box-shadow: 0 2px 8px rgba(27, 107, 74, 0.2);
+}
+
+:root[data-theme='dark'] .mode-btn.active {
+  box-shadow: 0 2px 8px rgba(74, 222, 128, 0.15);
 }
 
 .mode-btn:active {
-  transform: scale(0.96);
+  transform: scale(0.95);
 }
 
 /* ─── Juz Grid ─── */
 
-.juz-list {
-  display: flex;
-  flex-direction: column;
-}
+.juz-list { display: flex; flex-direction: column; }
 
 .juz-grid {
   display: grid;
@@ -299,27 +319,27 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  padding: 14px 8px;
+  padding: 16px 6px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  transition: all 0.2s ease;
+  border-radius: 14px;
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
   color: var(--text);
 }
 
 .juz-card:active {
-  transform: scale(0.94);
+  transform: scale(0.93);
   background: var(--surface-alt);
 }
 
 .juz-num {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--primary);
 }
 
 .juz-label {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 500;
   color: var(--text-tertiary);
 }
@@ -331,7 +351,16 @@
   flex-direction: column;
   align-items: center;
   height: 100%;
-  padding-top: 40px;
+  padding-top: 24px;
+  position: relative;
+}
+
+.tasbih-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 50% at 50% 35%, var(--glow-gold) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .tasbih-top {
@@ -348,88 +377,158 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   width: 100%;
-  padding-bottom: 16px;
+  padding-bottom: 10px;
 }
 
 .tasbih-display {
-  font-size: clamp(4rem, 20vw, 7rem);
+  font-size: clamp(3.6rem, 18vw, 6.5rem);
   font-weight: 700;
-  letter-spacing: -0.04em;
-  color: var(--text);
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, var(--text) 30%, var(--secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   line-height: 1;
-  margin: 10px 0;
+  margin: 6px 0;
   font-variant-numeric: tabular-nums;
   transition: transform 0.15s ease;
 }
 
 .tasbih-display.bump {
-  animation: number-bump 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes number-bump {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.08); }
-  100% { transform: scale(1); }
+  animation: number-bump 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .tasbih-label {
-  font-size: 1rem;
-  color: var(--text);
+  font-size: 0.82rem;
+  color: var(--text-tertiary);
   font-weight: 500;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .tasbih-plus-btn {
   width: 100%;
-  max-width: 340px;
-  min-height: 80px;
-  border-radius: var(--radius-lg);
-  font-size: 2.2rem;
-  font-weight: 700;
-  background: var(--primary);
+  max-width: 280px;
+  min-height: 74px;
+  border-radius: 37px;
+  font-size: 2rem;
+  font-weight: 200;
+  background: radial-gradient(ellipse at 35% 30%, #1b6b4a 0%, #0c281c 100%);
   color: white;
-  box-shadow: 0 8px 24px rgba(45, 106, 79, 0.3);
+  box-shadow:
+    0 8px 28px rgba(27, 107, 74, 0.25),
+    0 2px 8px rgba(27, 107, 74, 0.1),
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    inset 0 -3px 8px rgba(0,0,0,0.15);
   transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 16px;
+  margin-top: 14px;
+  letter-spacing: 0.06em;
+  position: relative;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  overflow: hidden;
+}
+
+.tasbih-plus-btn::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 42px;
+  border: 1.5px solid rgba(27, 107, 74, 0.12);
+  animation: btn-breathe 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes btn-breathe {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 0; transform: scale(1.06); }
+}
+
+.tasbih-plus-ripple {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(255,255,255,0.08);
+  transform: scale(0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tasbih-plus-btn:active .tasbih-plus-ripple {
+  animation: plus-ripple 0.35s ease-out forwards;
+}
+
+@keyframes plus-ripple {
+  0% { transform: scale(0); opacity: 0.4; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+.tasbih-plus-text {
+  position: relative;
+  z-index: 1;
 }
 
 .tasbih-plus-btn:active {
-  transform: scale(0.95);
-  box-shadow: 0 4px 12px rgba(45, 106, 79, 0.2);
+  transform: scale(0.96);
+  box-shadow:
+    0 4px 14px rgba(27, 107, 74, 0.15),
+    0 1px 4px rgba(27, 107, 74, 0.08),
+    inset 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.tasbih-plus-btn:active::before {
+  animation: none;
+  opacity: 0;
+  transform: scale(1.2);
+  transition: all 0.25s ease;
 }
 
 :root[data-theme='dark'] .tasbih-plus-btn {
-  box-shadow: 0 8px 24px rgba(74, 222, 128, 0.2);
+  background: radial-gradient(ellipse at 35% 30%, #1b6b4a 0%, #07180e 100%);
+  box-shadow:
+    0 8px 28px rgba(74, 222, 128, 0.12),
+    0 2px 8px rgba(74, 222, 128, 0.06),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+:root[data-theme='dark'] .tasbih-plus-btn::before {
+  border-color: rgba(74, 222, 128, 0.1);
 }
 
 :root[data-theme='dark'] .tasbih-plus-btn:active {
-  box-shadow: 0 4px 12px rgba(74, 222, 128, 0.15);
+  box-shadow:
+    0 4px 14px rgba(74, 222, 128, 0.08),
+    0 1px 4px rgba(74, 222, 128, 0.04),
+    inset 0 1px 2px rgba(0,0,0,0.25);
+}
+
+:root[data-theme='dark'] .tasbih-plus-ripple {
+  background: rgba(74, 222, 128, 0.06);
+}
 }
 
 .tasbih-presets {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .tasbih-preset-btn {
-  min-width: 56px;
-  height: 40px;
+  min-width: 52px;
+  height: 36px;
   border-radius: var(--radius-full);
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 600;
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text-secondary);
-  transition: all 0.2s ease;
-  padding: 0 16px;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  padding: 0 14px;
 }
 
 .tasbih-preset-btn:active {
@@ -441,12 +540,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 14px;
 }
 
 .tasbih-icon-btn {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
@@ -454,29 +553,29 @@
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text-secondary);
-  transition: all 0.2s ease;
-  font-size: 1.2rem;
-  font-weight: 700;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
 .tasbih-icon-btn svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   fill: currentColor;
 }
 
 .tasbih-icon-btn:active {
-  transform: scale(0.88);
+  transform: scale(0.85);
   background: var(--surface-alt);
 }
 
 .tasbih-icon-btn:disabled {
-  opacity: 0.3;
+  opacity: 0.25;
   transform: none;
 }
 
 :root[data-theme='dark'] .tasbih-icon-btn {
-  color: #ffffff;
+  color: #dce8de;
 }
 
 /* ─── Tasbih Beads ─── */
@@ -485,7 +584,27 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: 4px 0;
+  padding: 8px 0;
+  position: relative;
+}
+
+.tasbih-beads-wrap::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 260px;
+  height: 260px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--glow-gold) 0%, transparent 70%);
+  pointer-events: none;
+  animation: glow-breathe 4s ease-in-out infinite;
+}
+
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.06); }
 }
 
 .tasbih-beads {
@@ -503,6 +622,7 @@
   height: 100%;
   color: var(--text-tertiary);
   pointer-events: none;
+  opacity: 0.4;
 }
 
 .tasbih-bead {
@@ -514,75 +634,75 @@
   top: calc(50% + sin(var(--angle)) * 120px);
   left: calc(50% + cos(var(--angle)) * 120px);
   transform: translate(-50%, -50%);
-  transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .tasbih-bead-inner {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #d4c8b0, #a0826a 60%, #7a6048);
+  background: radial-gradient(circle at 32% 28%, #e6dcc8, #b89770 55%, #8a7050);
   box-shadow:
-    inset 0 -2px 4px rgba(0,0,0,0.15),
-    inset 0 2px 3px rgba(255,255,255,0.3),
-    0 1px 3px rgba(0,0,0,0.1);
-  transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    inset 0 -2px 5px rgba(0,0,0,0.18),
+    inset 0 2px 4px rgba(255,255,255,0.35),
+    0 2px 6px rgba(0,0,0,0.08);
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 :root[data-theme='dark'] .tasbih-bead-inner {
-  background: radial-gradient(circle at 35% 30%, #5a4a3a, #3d3025 60%, #2a1f18);
+  background: radial-gradient(circle at 32% 28%, #6a5540, #4a3a2a 55%, #2a1f18);
   box-shadow:
-    inset 0 -2px 4px rgba(0,0,0,0.3),
-    inset 0 2px 3px rgba(255,255,255,0.1),
-    0 1px 3px rgba(0,0,0,0.2);
+    inset 0 -2px 5px rgba(0,0,0,0.35),
+    inset 0 2px 4px rgba(255,255,255,0.08),
+    0 2px 6px rgba(0,0,0,0.2);
 }
 
-/* ─── Counted beads (already slid) ─── */
-
+/* Counted beads (already slid) */
 .tasbih-bead.counted .tasbih-bead-inner {
-  opacity: 0.3;
+  opacity: 0.25;
   width: 9px;
   height: 9px;
   margin: 2.5px;
+  box-shadow: none;
 }
 
-/* ─── Active bead (currently sliding) ─── */
-
+/* Active bead (currently sliding) */
 .tasbih-bead.active {
   z-index: 2;
-  filter: brightness(1.3);
+  filter: brightness(1.2);
 }
 
 .tasbih-bead.active .tasbih-bead-inner {
-  width: 22px;
-  height: 22px;
-  margin: -4px;
-  background: radial-gradient(circle at 35% 30%, #e8d5b0, #c49a6c 60%, #a07848);
+  width: 24px;
+  height: 24px;
+  margin: -5px;
+  background: radial-gradient(circle at 32% 28%, #f0e4c8, #d4b080 55%, #b89060);
   box-shadow:
-    inset 0 -2px 4px rgba(0,0,0,0.15),
-    inset 0 2px 3px rgba(255,255,255,0.4),
-    0 0 16px rgba(196, 154, 108, 0.5);
-  animation: bead-slide 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    inset 0 -2px 5px rgba(0,0,0,0.12),
+    inset 0 2px 4px rgba(255,255,255,0.45),
+    0 0 20px rgba(212, 176, 128, 0.5),
+    0 0 40px rgba(212, 176, 128, 0.2);
+  animation: bead-slide 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 :root[data-theme='dark'] .tasbih-bead.active .tasbih-bead-inner {
-  background: radial-gradient(circle at 35% 30%, #8a7050, #6a5540 60%, #4a3a2a);
+  background: radial-gradient(circle at 32% 28%, #9a8060, #7a6048 55%, #5a4530);
   box-shadow:
-    inset 0 -2px 4px rgba(0,0,0,0.3),
-    inset 0 2px 3px rgba(255,255,255,0.15),
-    0 0 16px rgba(196, 154, 108, 0.4);
+    inset 0 -2px 5px rgba(0,0,0,0.25),
+    inset 0 2px 4px rgba(255,255,255,0.1),
+    0 0 20px rgba(154, 128, 96, 0.4),
+    0 0 40px rgba(154, 128, 96, 0.15);
 }
 
-/* ─── Uncounted beads (not yet slid) ─── */
-
+/* Uncounted beads */
 .tasbih-bead.uncounted .tasbih-bead-inner {
   opacity: 1;
 }
 
 @keyframes bead-slide {
   0% { transform: scale(1); }
-  30% { transform: scale(1.7); opacity: 0.85; }
-  60% { transform: scale(0.88); }
+  25% { transform: scale(1.8); opacity: 0.8; }
+  55% { transform: scale(0.85); }
   100% { transform: scale(1); }
 }
 
@@ -593,16 +713,16 @@
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  padding: 60px 0;
+  padding: 50px 0;
   color: var(--text-tertiary);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 500;
 }
 
 .spinner {
-  width: 28px;
-  height: 28px;
-  border: 3px solid var(--border);
+  width: 26px;
+  height: 26px;
+  border: 2.5px solid var(--border);
   border-top-color: var(--primary);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -618,15 +738,20 @@
 }
 
 .secondary-btn {
-  min-height: 42px;
+  min-height: 40px;
   padding: 0 20px;
-  border-radius: var(--radius);
-  font-size: 0.9rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
   font-weight: 600;
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text);
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.secondary-btn:active {
+  transform: scale(0.96);
+  background: var(--surface-alt);
 }
 
 /* ─── Surah List (Quran) ─── */
@@ -651,11 +776,26 @@
   padding: 14px 16px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 14px;
   width: 100%;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
   text-align: left;
   color: var(--text);
+  position: relative;
+  overflow: hidden;
+}
+
+.surah-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--primary);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  border-radius: 0 2px 2px 0;
 }
 
 .surah-card:active {
@@ -663,13 +803,17 @@
   background: var(--surface-alt);
 }
 
+.surah-card:active::before {
+  opacity: 1;
+}
+
 .surah-num {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: var(--primary-soft);
   color: var(--primary);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -692,7 +836,7 @@
 }
 
 .surah-meta {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--text-tertiary);
   font-weight: 500;
 }
@@ -703,6 +847,7 @@
   color: var(--text);
   direction: rtl;
   flex-shrink: 0;
+  opacity: 0.8;
 }
 
 /* ─── Surah View ─── */
@@ -718,11 +863,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 16px;
+  padding: 18px;
   margin-bottom: 12px;
-  background: var(--surface);
+  background: linear-gradient(135deg, var(--surface), var(--surface-alt));
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 16px;
 }
 
 .surah-header-info {
@@ -738,9 +883,9 @@
 }
 
 .surah-view-meta {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--text-tertiary);
-  margin: 2px 0 0;
+  margin: 3px 0 0;
   font-weight: 500;
 }
 
@@ -754,8 +899,8 @@
   background: var(--primary);
   color: white;
   flex-shrink: 0;
-  transition: all 0.2s ease;
-  box-shadow: 0 3px 10px rgba(45, 106, 79, 0.25);
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 3px 12px rgba(27, 107, 74, 0.25);
 }
 
 .audio-btn svg {
@@ -769,36 +914,37 @@
 }
 
 .audio-btn.is-playing {
-  background: #e74c3c;
-  box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
+  background: #c0392b;
+  box-shadow: 0 3px 12px rgba(192, 57, 43, 0.3);
 }
 
 :root[data-theme='dark'] .audio-btn {
-  box-shadow: 0 3px 10px rgba(74, 222, 128, 0.2);
+  box-shadow: 0 3px 12px rgba(74, 222, 128, 0.15);
 }
 
 .bismillah {
   text-align: center;
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   line-height: 2;
   color: var(--primary);
-  padding: 12px 0 16px;
+  padding: 10px 0 16px;
   direction: rtl;
   font-weight: 500;
-  opacity: 0.7;
+  opacity: 0.65;
+  letter-spacing: 0.02em;
 }
 
 .ayah-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   padding-bottom: 20px;
 }
 
 .ayah-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 14px;
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -807,12 +953,12 @@
 }
 
 .ayah-num {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 600;
   color: var(--primary);
   background: var(--primary-soft);
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -823,7 +969,7 @@
 }
 
 .ayah-arab {
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   line-height: 1.8;
   text-align: right;
   direction: rtl;
@@ -833,7 +979,7 @@
 }
 
 .ayah-latin {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--text-secondary);
   font-style: italic;
   line-height: 1.5;
@@ -842,7 +988,7 @@
 .ayah-trans {
   font-size: 0.85rem;
   color: var(--text);
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 /* ─── Hadits ─── */
@@ -867,11 +1013,26 @@
   padding: 14px 16px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 14px;
   width: 100%;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
   text-align: left;
   color: var(--text);
+  position: relative;
+  overflow: hidden;
+}
+
+.narrator-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--secondary);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  border-radius: 0 2px 2px 0;
 }
 
 .narrator-card:active {
@@ -879,10 +1040,14 @@
   background: var(--surface-alt);
 }
 
+.narrator-card:active::before {
+  opacity: 1;
+}
+
 .narrator-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-sm);
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
   background: var(--secondary-soft);
   color: var(--secondary);
   display: flex;
@@ -892,20 +1057,20 @@
 }
 
 .narrator-icon svg {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   fill: currentColor;
 }
 
 .narrator-name {
   flex: 1;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 600;
   color: var(--text);
 }
 
 .narrator-total {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--text-tertiary);
   font-weight: 500;
 }
@@ -919,7 +1084,7 @@
 }
 
 .hadits-view-title {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--text);
   margin: 0 0 12px;
@@ -928,14 +1093,14 @@
 .hadith-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   padding-bottom: 20px;
 }
 
 .hadith-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 14px;
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -950,16 +1115,16 @@
 }
 
 .hadith-num {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
   color: var(--secondary);
   background: var(--secondary-soft);
-  padding: 4px 10px;
+  padding: 3px 10px;
   border-radius: var(--radius-full);
 }
 
 .hadith-grade {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 600;
   color: var(--primary);
   background: var(--primary-soft);
@@ -967,17 +1132,8 @@
   border-radius: var(--radius-full);
 }
 
-.hadith-num {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--secondary);
-  background: var(--secondary-soft);
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
-}
-
 .hadith-arab {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   line-height: 1.7;
   text-align: right;
   direction: rtl;
@@ -986,18 +1142,18 @@
 }
 
 .hadith-text {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--text);
   line-height: 1.6;
 }
 
 .hadith-source {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--text-tertiary);
   font-style: italic;
   border-top: 1px solid var(--border);
   padding-top: 8px;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 /* ─── Pagination ─── */
@@ -1011,15 +1167,15 @@
 }
 
 .pag-btn {
-  min-height: 40px;
-  padding: 0 20px;
-  border-radius: var(--radius);
-  font-size: 0.85rem;
+  min-height: 38px;
+  padding: 0 18px;
+  border-radius: 12px;
+  font-size: 0.82rem;
   font-weight: 600;
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text);
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .pag-btn:active {
@@ -1028,12 +1184,12 @@
 }
 
 .pag-btn:disabled {
-  opacity: 0.3;
+  opacity: 0.25;
   transform: none;
 }
 
 .pag-info {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
   color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
@@ -1084,6 +1240,7 @@
   stroke-width: 6;
   stroke-linecap: round;
   transition: stroke-dashoffset 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  filter: drop-shadow(0 0 6px var(--glow-green));
 }
 
 .countdown-center {
@@ -1106,10 +1263,10 @@
 }
 
 .countdown-status {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--text-tertiary);
   font-weight: 500;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
@@ -1123,20 +1280,21 @@
 
 .countdown-input {
   width: 100%;
-  min-height: 52px;
+  min-height: 50px;
   padding: 0 16px;
-  border-radius: var(--radius);
-  font-size: 1.05rem;
+  border-radius: 14px;
+  font-size: 1rem;
   font-weight: 500;
   text-align: center;
   background: var(--surface);
   border: 1.5px solid var(--border);
   color: var(--text);
-  transition: border-color 0.2s ease;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .countdown-input:focus {
   border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
 }
 
 .countdown-input::placeholder {
@@ -1144,7 +1302,7 @@
 }
 
 .countdown-hint {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--text-tertiary);
   text-align: center;
   font-weight: 500;
@@ -1153,9 +1311,9 @@
 .countdown-action-btn {
   width: 100%;
   max-width: 280px;
-  min-height: 52px;
-  border-radius: var(--radius);
-  font-size: 1rem;
+  min-height: 50px;
+  border-radius: 14px;
+  font-size: 0.95rem;
   font-weight: 600;
   transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
   display: flex;
@@ -1169,13 +1327,13 @@
 }
 
 .countdown-action-btn.start-btn {
-  background: var(--primary);
+  background: linear-gradient(135deg, #1b6b4a, #0f3d2a);
   color: white;
-  box-shadow: 0 6px 20px rgba(45, 106, 79, 0.25);
+  box-shadow: 0 6px 20px rgba(27, 107, 74, 0.25);
 }
 
 :root[data-theme='dark'] .countdown-action-btn.start-btn {
-  box-shadow: 0 6px 20px rgba(74, 222, 128, 0.15);
+  box-shadow: 0 6px 20px rgba(74, 222, 128, 0.12);
 }
 
 .countdown-action-btn.stop-btn {
@@ -1184,43 +1342,55 @@
   border: 1.5px solid var(--border);
 }
 
-/* ─── Floating Chips (Countdown + Audio) ─── */
+/* ─── Floating Chips ─── */
 
 .chip {
   position: fixed;
   z-index: 50;
-  top: calc(56px + var(--safe-top, 0px));
+  top: calc(52px + env(safe-area-inset-top));
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px 8px 14px;
+  padding: 7px 14px 7px 12px;
   border-radius: var(--radius-full);
   box-shadow: var(--shadow);
-  animation: chip-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: chip-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
   white-space: nowrap;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
   border: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .chip:active {
-  transform: translateX(-50%) scale(0.95);
+  transform: translateX(-50%) scale(0.94);
 }
 
 .chip-countdown {
-  background: var(--primary-soft);
-  border: 1px solid var(--primary);
+  background: rgba(27, 107, 74, 0.12);
+  border: 1px solid rgba(27, 107, 74, 0.25);
   color: var(--primary);
   text-decoration: none;
 }
 
+:root[data-theme='dark'] .chip-countdown {
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+}
+
 .chip-audio {
-  background: var(--secondary-soft);
-  border: 1px solid var(--secondary);
+  background: rgba(201, 149, 74, 0.12);
+  border: 1px solid rgba(201, 149, 74, 0.25);
   color: var(--secondary);
+}
+
+:root[data-theme='dark'] .chip-audio {
+  background: rgba(230, 204, 158, 0.1);
+  border: 1px solid rgba(230, 204, 158, 0.2);
 }
 
 .chip-audio-icon {
@@ -1233,7 +1403,7 @@
 @keyframes chip-in {
   from {
     opacity: 0;
-    transform: translateX(-50%) translateY(16px) scale(0.9);
+    transform: translateX(-50%) translateY(12px) scale(0.9);
   }
   to {
     opacity: 1;
@@ -1242,16 +1412,16 @@
 }
 
 .chip-label {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   opacity: 0.75;
 }
 
 .chip-time {
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
@@ -1268,15 +1438,15 @@
 }
 
 .empty-state svg {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   fill: currentColor;
-  opacity: 0.4;
+  opacity: 0.35;
   margin-bottom: 4px;
 }
 
 .empty-state p {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 500;
 }
 
@@ -1290,13 +1460,9 @@
     margin: 0 auto;
   }
 
-  body {
-    background: #dde4d6;
-  }
+  body { background: #e8e4dc; }
 
-  :root[data-theme='dark'] body {
-    background: #0a1a0e;
-  }
+  :root[data-theme='dark'] body { background: #0a1a0e; }
 }
 
 /* ─── Pull to Refresh ─── */
@@ -1311,7 +1477,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
   height: 56px;
   transition: opacity 0.3s ease, transform 0.3s ease;
   pointer-events: none;
@@ -1328,14 +1494,12 @@
   animation: ptr-spin 0.8s linear infinite;
 }
 
-@keyframes ptr-spin {
-  to { transform: rotate(360deg); }
-}
+@keyframes ptr-spin { to { transform: rotate(360deg); } }
 
 .ptr-label {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 600;
-  letter-spacing: 0.02em;
-  opacity: 0.7;
+  letter-spacing: 0.03em;
+  opacity: 0.6;
   text-align: center;
 }

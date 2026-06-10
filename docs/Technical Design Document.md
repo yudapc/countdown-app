@@ -168,22 +168,23 @@ Two themes via `data-theme` attribute on `<html>`:
 ### Theme Variables
 | Variable | Light | Dark |
 |----------|-------|------|
-| `--bg` | `#f0f2eb` | `#0f1a12` |
-| `--primary` | `#2d6a4f` | `#4ade80` |
-| `--secondary` | `#b9935a` | `#d4a373` |
-| `--text` | `#1a2e1f` | `#e8f0e8` |
+| `--bg` | `#f7f5f0` (warm ivory) | `#0f1a12` |
+| `--primary` | `#1b6b4a` (deep emerald) | `#4ade80` |
+| `--secondary` | `#c9954a` (warm gold) | `#e6cc9e` |
+| `--accent` | `#c9774e` (warm copper) | `#f0a07a` |
+| `--text` | `#1e2e24` | `#dce8de` |
 
 ### Theme Toggle
 Cycles: system → light → dark → system. Media query listener detects system preference.
 - `useEffect` fires on `[themeMode, deviceTheme]` (not `[activeTheme]`) to apply the correct data-theme even when the computed value doesn't change (e.g., system → light when device is already light).
 
 ### Bottom Tab Bar (Glass Effect)
-- `position: fixed; bottom: 0` with `backdrop-filter: blur(24px)` for iOS-style frosted glass
-- Light theme: `rgba(240, 242, 235, 0.65)` background
-- Dark theme: `rgba(15, 26, 18, 0.75)` background
-- `will-change: backdrop-filter` for GPU-accelerated blur
+- `position: fixed; bottom: 0` with `backdrop-filter: blur(28px) saturate(1.3)` for iOS-style frosted glass
+- Light theme: `rgba(247, 245, 240, 0.7)` background
+- Dark theme: `rgba(15, 26, 18, 0.7)` background
 - `padding-bottom: env(safe-area-inset-bottom)` for notched devices
 - 4 icon-only buttons with ARIA labels, no visible text labels
+- Active tab indicator: animated dot (3px bar) below the icon instead of background fill; icon scales +1.1x on active
 
 ## 7. PWA Configuration
 
@@ -208,11 +209,15 @@ Cycles: system → light → dark → system. Media query listener detects syste
 ### Tasbih Beads Animation
 - 33 beads arranged in a circle (280px diameter, 14px beads) via CSS `sin()`/`cos()` positioning
 - Each bead computed angle: `i * (360/33) - 90 + gapShift` degrees in JSX
-- Three visual states: `counted` (tiny 9px, opacity 0.3), `active` (enlarged 22px, gold glow, slide animation), `uncounted` (default 14px)
+- Three visual states: `counted` (tiny 9px, opacity 0.25), `active` (enlarged 24px, gold glow, slide animation), `uncounted` (default 14px)
 - **Gap**: 7° shift applied to all beads after the active one, creating a visible separation between counted and uncounted groups
-- **Slide animation**: `bead-slide` keyframe (scale 1→1.7→0.88→1, 0.45s) plays each time `.active` class transfers to a new bead
+- **Slide animation**: `bead-slide` keyframe (scale 1→1.8→0.85→1, 0.5s) plays each time `.active` class transfers to a new bead
+- Beads use a 3D radial gradient (warm wood/amber tones) with specular highlights and inset shadows for a polished, jewel-like appearance
 - SVG circle string (`r=120`, `opacity=0.15`) behind the beads
-- Dark theme maintains the same structure with deeper wood tones
+- **Ambient glow**: `.tasbih-beads-wrap::before` pseudo-element creates a warm gold radial glow behind the bead circle, animated with `glow-breathe` (4s ease-in-out infinite, scales 1→1.06)
+- **Page atmosphere**: `.tasbih-page::before` adds a subtle gold radial gradient overlay; the counter uses a `linear-gradient(135deg, text → secondary)` text fill for a warm gradient effect
+- **Plus button**: Pill-shaped (border-radius 37px, max-width 280px) with a radial gradient matching the beads (`#1b6b4a` → `#0c281c`), deep 3D shadows, and a breathing pulse ring (`::before` pseudo-element with `btn-breathe` animation). On press: compresses (scale 0.96) with an expanding ripple overlay (`tasbih-plus-ripple` class, `plus-ripple` keyframe 0.35s). Font weight 200 for elegant "+" appearance.
+- Dark theme maintains the same structure with deeper forest undertones
 
 ### Countdown Progress Ring
 - SVG `<circle>` with `stroke-dasharray`/`stroke-dashoffset`

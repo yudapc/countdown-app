@@ -96,7 +96,8 @@ const TasbihFeature = () => {
           onClick={handleIncrement}
           aria-label="Tambah"
         >
-          +
+          <span className="tasbih-plus-ripple" />
+          <span className="tasbih-plus-text">+</span>
         </button>
       </div>
     </div>
