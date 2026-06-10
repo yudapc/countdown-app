@@ -40,15 +40,15 @@ const TasbihFeature = () => {
     <div className="tasbih-page">
       <div className="tasbih-top">
         <span className="tasbih-label">Tasbih</span>
-        <div className="tasbih-display" ref={displayRef}>
-          {count.toLocaleString('id-ID')}
-        </div>
 
         <div className="tasbih-beads-wrap">
           <div className="tasbih-beads">
             <svg className="tasbih-string" viewBox="0 0 280 280" width="280" height="280" aria-hidden="true">
               <circle cx="140" cy="140" r="120" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.15" />
             </svg>
+            <div className="tasbih-display" ref={displayRef}>
+              {count.toLocaleString('id-ID')}
+            </div>
             {Array.from({ length: TOTAL_BEADS }).map((_, i) => {
               const baseAngle = i * ANGLE_STEP - 90
               const gapShift = i > slideIndex ? GAP_DEG : 0

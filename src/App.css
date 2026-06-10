@@ -383,7 +383,11 @@
 }
 
 .tasbih-display {
-  font-size: clamp(3.6rem, 18vw, 6.5rem);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(2.6rem, 12vw, 4rem);
   font-weight: 700;
   letter-spacing: -0.03em;
   background: linear-gradient(135deg, var(--text) 30%, var(--secondary) 100%);
@@ -391,9 +395,10 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   line-height: 1;
-  margin: 6px 0;
   font-variant-numeric: tabular-nums;
   transition: transform 0.15s ease;
+  z-index: 3;
+  pointer-events: none;
 }
 
 .tasbih-display.bump {
