@@ -19,7 +19,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 8px 15px 4px;
-  padding-top: calc(8px + var(--safe-top, 0px));
+  padding-top: calc(8px + env(safe-area-inset-top));
   min-height: 52px;
 }
 
@@ -143,7 +143,7 @@
   justify-content: center;
   gap: 6px;
   padding: 8px 16px;
-  padding-bottom: calc(8px + var(--safe-bottom, 0px));
+  padding-bottom: calc(8px + env(safe-area-inset-bottom));
   background: rgba(240, 242, 235, 0.72);
   backdrop-filter: blur(24px) saturate(1.4);
   -webkit-backdrop-filter: blur(24px) saturate(1.4);
