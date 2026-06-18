@@ -7,7 +7,7 @@ import { saveLastRead, getLastRead, findJuzForAyah } from './lastRead'
 
 const Juz_LIST = Array.from({ length: 30 }, (_, i) => i + 1)
 
-const BISMILLAH = 'بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ'
+const BISMILLAH = 'بِسۡمِ اللهِ الرَّحۡمٰنِ الرَّحِيۡمِ'
 const stripTashkeel = (s) => s.replace(/[ً-ٰٟ]/g, '')
 
 const SearchInput = ({ value, onChange, placeholder }) => (
@@ -292,7 +292,7 @@ const SurahView = ({ number, onBack }) => {
   const revelation = surah?.revelation || ''
   const totalAyahs = surah?.number_of_ayahs || verses.length
   const audioUrl = surah?.audio_url || ''
-  const hideBismillah = verses[0]?.arab && stripTashkeel(verses[0].arab) === stripTashkeel(BISMILLAH)
+  const hideBismillah = surah?.number === 9 || (verses[0]?.arab && stripTashkeel(verses[0].arab) === stripTashkeel(BISMILLAH))
 
   return (
     <div className="surah-view">

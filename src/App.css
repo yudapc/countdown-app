@@ -957,6 +957,7 @@
   direction: rtl;
   flex-shrink: 0;
   opacity: 0.8;
+  font-family: var(--font-arabic);
 }
 
 /* ─── Surah View ─── */
@@ -1041,6 +1042,7 @@
   font-weight: 500;
   opacity: 0.65;
   letter-spacing: 0.02em;
+  font-family: var(--font-arabic);
 }
 
 .ayah-list {
@@ -1089,6 +1091,7 @@
   color: var(--text);
   padding-top: 25px;
   font-weight: 500;
+  font-family: var(--font-arabic);
 }
 
 .ayah-latin {
@@ -1378,6 +1381,7 @@
   direction: rtl;
   color: var(--text);
   font-weight: 500;
+  font-family: var(--font-arabic);
 }
 
 .hadith-text {
