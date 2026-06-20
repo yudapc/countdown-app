@@ -170,6 +170,11 @@ function App() {
     }
   }
 
+  const handleScrollToTop = () => {
+    const main = document.querySelector('.app-main')
+    if (main) main.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   const handleRefresh = () => {
     if ('caches' in window) {
       caches.keys().then((names) => Promise.all(names.map((n) => caches.delete(n))))
@@ -187,7 +192,7 @@ function App() {
                 <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2Z" />
               </svg>
             </button>
-            <span className="header-back-title">{headerTitle}</span>
+            <span className="header-back-title" onClick={handleScrollToTop}>{headerTitle}</span>
           </div>
         ) : (
           <h1>{defaultTitle}</h1>
