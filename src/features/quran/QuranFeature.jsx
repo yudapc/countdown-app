@@ -2,7 +2,7 @@ import { createPortal } from 'react-dom'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useQuranList, useSurahDetail, useJuzDetail } from './hooks'
-import { useHeader, useAudio } from '../../shared'
+import { useHeader, useAudio, useAyahAudio } from '../../shared'
 import { saveLastRead, getLastRead, findJuzForAyah } from './lastRead'
 
 const Juz_LIST = Array.from({ length: 30 }, (_, i) => i + 1)
@@ -99,9 +99,12 @@ const JuzList = () => {
 }
 
 const AyahCard = ({ ayah, id, onBookmarkClick, ...rest }) => {
+  const { currentAyah, playing, toggleAyah } = useAyahAudio()
+  const isPlaying = currentAyah?.surahNumber === ayah.surah_number && currentAyah?.ayahNumber === ayah.ayah_number && playing
+
   return (
     <div
-      className={`ayah-card ${ayah.ayah_number}`}
+      className={`ayah-card ${ayah.ayah_number}${isPlaying ? ' is-playing' : ''}`}
       id={id}
       {...rest}
     >
@@ -109,6 +112,22 @@ const AyahCard = ({ ayah, id, onBookmarkClick, ...rest }) => {
       <div className="ayah-arab">{ayah.arab}</div>
       <div className="ayah-latin">{ayah.transliteration}</div>
       <div className="ayah-trans">{ayah.translation}</div>
+      <button
+        className={`ayah-audio-btn${isPlaying ? ' is-playing' : ''}`}
+        onClick={() => toggleAyah(ayah.surah_number, ayah.ayah_number, ayah.audio_url)}
+        aria-label={isPlaying ? 'Jeda' : 'Putar ayat'}
+        title={isPlaying ? 'Jeda' : 'Putar ayat'}
+      >
+        {isPlaying ? (
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="16" height="16" fill="currentColor">
+            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+          </svg>
+        ) : (
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="16" height="16" fill="currentColor">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+        )}
+      </button>
       <button
         className="ayah-bookmark-btn"
         onClick={() => onBookmarkClick?.(ayah)}

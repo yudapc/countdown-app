@@ -7,6 +7,9 @@
 const AUDIO_CDN_URL =
   'https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/{surahNumber}.mp3'
 
+const AYAH_AUDIO_CDN_URL =
+  'https://www.everyayah.com/data/Abdul_Basit_Murattal_192kbps/{surahNumber:03d}{ayahNumber:03d}.mp3'
+
 // ── Juz boundaries (known, standard) ──────────────────────────────
 // Format: [surahStart, ayahStart, surahEnd, ayahEnd]
 // see https://en.wikipedia.org/wiki/Juz'
@@ -70,10 +73,14 @@ const load = async () => {
 
 const normalizeAyah = (a, surahNumber) => ({
   id: `${surahNumber}:${a.nomor}`,
+  surah_number: surahNumber,
   ayah_number: a.nomor,
   arab: a.ar,
   translation: a.id,
   transliteration: a.tr,
+  audio_url: AYAH_AUDIO_CDN_URL
+    .replace('{surahNumber:03d}', String(surahNumber).padStart(3, '0'))
+    .replace('{ayahNumber:03d}', String(a.nomor).padStart(3, '0')),
 })
 
 const surahAudioUrl = (surahNumber) =>
