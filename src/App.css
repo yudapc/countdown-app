@@ -1085,7 +1085,7 @@
   text-align: right;
   direction: rtl;
   color: var(--text);
-  padding-top: 25px;
+  padding: 25px 44px 0 0;
   font-weight: 500;
   font-family: var(--font-arabic);
 }
@@ -1129,6 +1129,14 @@
 
 .ayah-bookmark-btn:active {
   transform: scale(0.95);
+}
+
+:root[data-theme='dark'] .ayah-bookmark-btn {
+  color: #fff;
+}
+
+:root[data-theme='dark'] .ayah-bookmark-btn:hover {
+  color: var(--primary);
 }
 
 /* ─── Goto Ayah ─── */
