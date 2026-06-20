@@ -98,44 +98,27 @@ const JuzList = () => {
   )
 }
 
-const AyahCard = ({ ayah, id, onLongPress, ...rest }) => {
-  const touchTimer = useRef(null)
-
-  const clearTouch = () => {
-    if (touchTimer.current) {
-      clearTimeout(touchTimer.current)
-      touchTimer.current = null
-    }
-  }
-
-  useEffect(() => () => clearTouch(), [])
-
-  const handleContextMenu = (e) => {
-    e.preventDefault()
-    onLongPress?.(ayah)
-  }
-
-  const handleTouchStart = () => {
-    clearTouch()
-    touchTimer.current = setTimeout(() => {
-      onLongPress?.(ayah)
-    }, 500)
-  }
-
+const AyahCard = ({ ayah, id, onBookmarkClick, ...rest }) => {
   return (
     <div
       className={`ayah-card ${ayah.ayah_number}`}
       id={id}
-      onContextMenu={handleContextMenu}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={clearTouch}
-      onTouchMove={clearTouch}
       {...rest}
     >
       <div className="ayah-num">{ayah.ayah_number}</div>
       <div className="ayah-arab">{ayah.arab}</div>
       <div className="ayah-latin">{ayah.transliteration}</div>
       <div className="ayah-trans">{ayah.translation}</div>
+      <button
+        className="ayah-bookmark-btn"
+        onClick={() => onBookmarkClick?.(ayah)}
+        aria-label="Tandai terakhir dibaca"
+        title="Tandai terakhir dibaca"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="18" height="18">
+          <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H6V4h2v8l2.5-1.5L13 12V4h5v16z" />
+        </svg>
+      </button>
     </div>
   )
 }
@@ -202,8 +185,8 @@ const SurahView = ({ number, onBack }) => {
     navigate(location.pathname, { replace: true, state: {} })
   }, [surah, location.state?.scrollToAyah, location.pathname, navigate])
 
-  // ── Long press → show context menu ────────────────────────────
-  const handleLongPress = useCallback(
+  // ── Bookmark → show context menu ────────────────────────────
+  const handleBookmarkClick = useCallback(
     (ayahData) => {
       setShowConfirmOverwrite(false)
       setContextMenuAyah({
@@ -333,7 +316,7 @@ const SurahView = ({ number, onBack }) => {
       )}
       <div className="ayah-list">
         {Array.isArray(verses) && verses.map((ayah, idx) => (
-          <AyahCard key={ayah.id || ayah.ayah_number || idx} id={`surah-ayah-${ayah.ayah_number}`} ayah={ayah} data-ayah-number={ayah.ayah_number} onLongPress={handleLongPress} />
+          <AyahCard key={ayah.id || ayah.ayah_number || idx} id={`surah-ayah-${ayah.ayah_number}`} ayah={ayah} data-ayah-number={ayah.ayah_number} onBookmarkClick={handleBookmarkClick} />
         ))}
       </div>
       {contextMenuAyah && !showConfirmOverwrite && (
@@ -400,8 +383,8 @@ const JuzView = ({ number, onBack }) => {
     navigate(location.pathname, { replace: true, state: {} })
   }, [verses, location.state?.scrollToAyah, location.state?.scrollToSurah, location.pathname, navigate])
 
-  // ── Long press → show context menu ────────────────────────────
-  const handleLongPress = useCallback((ayahData) => {
+  // ── Bookmark → show context menu ────────────────────────────
+  const handleBookmarkClick = useCallback((ayahData) => {
     setShowConfirmOverwrite(false)
     setContextMenuAyah({
       ayahNumber: ayahData.ayah_number,
@@ -466,7 +449,7 @@ const JuzView = ({ number, onBack }) => {
       </div>
       <div className="ayah-list">
         {Array.isArray(verses) && verses.map((ayah, idx) => (
-          <AyahCard key={ayah.id || ayah.ayah_number || idx} id={`juz-ayah-${ayah.surah_number}-${ayah.ayah_number}`} ayah={ayah} data-ayah-number={ayah.ayah_number} data-surah-number={ayah.surah_number} data-surah-name={ayah.surah_name} onLongPress={handleLongPress} />
+          <AyahCard key={ayah.id || ayah.ayah_number || idx} id={`juz-ayah-${ayah.surah_number}-${ayah.ayah_number}`} ayah={ayah} data-ayah-number={ayah.ayah_number} data-surah-number={ayah.surah_number} data-surah-name={ayah.surah_name} onBookmarkClick={handleBookmarkClick} />
         ))}
       </div>
       {contextMenuAyah && !showConfirmOverwrite && (

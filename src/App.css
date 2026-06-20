@@ -1061,10 +1061,6 @@
   flex-direction: column;
   gap: 8px;
   position: relative;
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-  touch-action: manipulation;
 }
 
 .ayah-num {
@@ -1105,6 +1101,34 @@
   font-size: 0.85rem;
   color: var(--text);
   line-height: 1.6;
+}
+
+.ayah-bookmark-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
+  z-index: 1;
+}
+
+.ayah-bookmark-btn:hover {
+  background: var(--primary-soft, rgba(99, 102, 241, 0.12));
+  color: var(--primary);
+  transform: scale(1.1);
+}
+
+.ayah-bookmark-btn:active {
+  transform: scale(0.95);
 }
 
 /* ─── Goto Ayah ─── */
