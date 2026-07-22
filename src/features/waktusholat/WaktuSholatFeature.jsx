@@ -32,7 +32,12 @@ const WaktuSholatFeature = () => {
 
   useEffect(() => {
     if (!next || prevNextKey.current === next.key) return
+    const isInitial = prevNextKey.current === null
     prevNextKey.current = next.key
+    if (isInitial) {
+      scheduleBackground(prayerList)
+      return
+    }
     const activePrayer = prayerList.find((p) => p.isActive)
     if (!activePrayer || activePrayer.prayer === null) return
     const flag = `adhan-played-${activePrayer.key}-${Math.floor(activePrayer.time.getTime() / 86400000)}`
