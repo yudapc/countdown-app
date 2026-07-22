@@ -1081,12 +1081,12 @@
 }
 
 .ayah-arab {
-  font-size: 1.35rem;
+  font-size: 1.55rem;
   line-height: 1.8;
   text-align: right;
   direction: rtl;
   color: var(--text);
-  padding: 48px 44px 0 0;
+  padding: 48px 0 0 0;
   font-weight: 500;
   font-family: var(--font-arabic);
 }
