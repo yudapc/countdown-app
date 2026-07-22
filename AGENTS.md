@@ -1,6 +1,6 @@
 # Muslim App — Agent Guide
 
-Mobile-first React PWA: Tasbih counter, Countdown timer, Al-Quran reader, Hadits encyclopedia, Waktu Sholat.
+Mobile-first React PWA: Waktu Sholat, Al-Quran reader, Hadits encyclopedia, Tasbih counter, Countdown timer.
 
 ## Commands
 
@@ -17,7 +17,7 @@ No test framework installed. No typecheck step.
 
 - **Framework:** React 19 + react-router-dom 7 (Pages Router style — `useParams`, `useNavigate`, `Route`)
 - **Build:** Vite 6 + `@vitejs/plugin-react`
-- **PWA:** `vite-plugin-pwa` with `injectManifest` strategy, custom `src/sw.js`, auto-update, navigateFallback, home-screen shortcuts (`/tasbih`, `/quran`, `/sholat`)
+- **PWA:** `vite-plugin-pwa` with `injectManifest` strategy, custom `src/sw.js`, auto-update, navigateFallback, home-screen shortcuts (`/sholat`, `/quran`, `/tasbih`)
 - **Deploy:** Vercel SPA rewrites (`vercel.json` rewrites all paths to `index.html`)
 - **No state management library** — uses React context + localStorage only
 
@@ -25,14 +25,14 @@ No test framework installed. No typecheck step.
 
 ```
 src/
+  sw.js                  # Custom service worker (injectManifest) for background notifications
   app/App.jsx            # Root layout, bottom tabs, routing, header, SEO, theme
   features/
-    tasbih/              # /tasbih — digital tasbih counter
-    countdown/           # /waktu — countdown timer with SVG ring
+    waktusholat/         # /sholat — prayer times, qibla compass, adhan
     quran/               # /quran[/:surahNumber], /quran/juz/:juzNumber
     hadits/              # /hadits[/:slug] — hadith by narrator
-    waktusholat/         # /sholat — prayer times with local adhan calculation
-  sw.js                  # Custom service worker (injectManifest) for background notifications
+    tasbih/              # /tasbih — digital tasbih counter + countdown timer
+    countdown/           # (used inside tasbih as sub-tab)
   shared/                # Shared components, context, hooks, utils
     context/             # AudioContext, AyahAudioContext, HeaderContext, CountdownContext
     providers/           # CountdownProvider
@@ -41,7 +41,7 @@ src/
 ```
 
 - Entry: `src/main.jsx` mounts `<BrowserRouter>` → wraps 4 providers (`CountdownProvider`, `HeaderProvider`, `AudioProvider`, `AyahAudioProvider`)
-- Default path `/` redirects to `/tasbih`
+- Default path `/` redirects to `/sholat`
 - Feature components exported from `src/features/index.js`
 - Shared utilities exported from `src/shared/index.js`
 
@@ -52,7 +52,7 @@ src/
 - **Audio** streams from CDN — surah audio: `cdn.islamic.network/quran/audio-surah/128/ar.alafasy/`; ayah audio: `everyayah.com/data/Abdul_Basit_Murattal_192kbps/`.
 - **Two audio contexts** — `AudioContext` (full surah, persistent across tabs with floating chip), `AyahAudioContext` (per-ayah playback within surah/juz view). They operate independently.
 - **Countdown** persists via localStorage (`countdown-end-at`, `countdown-started-at`). Alarm plays `ringtone.wav` on expiry. Floating chip on other pages when active.
-- **Waktu Sholat** uses `adhan` npm package for local calculation (`CalculationMethod.Singapore()` which matches Kemenag: 20° Fajr, 18° Isha). Uses `navigator.geolocation` for coordinates. Caches location in localStorage. Toggle for adhan audio (`adhan.mp3` in `public/`) plays at prayer time. Service worker handles background notifications via `postMessage`.
+- **Waktu Sholat** uses `adhan` npm package for local calculation (`CalculationMethod.Singapore()` which matches Kemenag: 20° Fajr, 18° Isha). Uses `navigator.geolocation` for coordinates. Caches location in localStorage (`location-mode` + `manual-location`). Toggle for adhan audio (`adhan.mp3` in `public/`) plays at prayer time. Service worker handles background notifications via `postMessage`. Qibla direction uses `Qibla()` from adhan + device orientation (`DeviceOrientationEvent`) for live compass. Location can be set manually via `LocationPicker` component (Leaflet map + 40 preset cities).
 - **Theme** — cycles system → light → dark. Stored in localStorage as `theme-mode`.
 - **Header** is dynamic — feature views call `setHeader(title, backNav)` from `HeaderContext`, the root App renders it; used by Quran and Hadits detail views.
 - **Fonts** — Sora (Google Fonts, Latin/UI text), Scheherazade New (local `public/fonts/*.ttf`, Arabic text)

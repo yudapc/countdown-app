@@ -42,8 +42,20 @@ const COMPASS_DIRS = [
   { min: 326.25, max: 348.75, label: 'UBL' },
 ]
 
+function loadManualLocation() {
+  try {
+    return JSON.parse(localStorage.getItem('manual-location'))
+  } catch { return null }
+}
+
 export function usePrayerTimes() {
-  const [location, setLocation] = useState(() => getCached('prayer-location') || CITY_DEFAULT)
+  const [locationMode, setLocationModeState] = useState(() => localStorage.getItem('location-mode') || 'auto')
+  const [location, setLocation] = useState(() => {
+    if (localStorage.getItem('location-mode') === 'manual') {
+      return loadManualLocation() || CITY_DEFAULT
+    }
+    return getCached('prayer-location') || CITY_DEFAULT
+  })
   const [prayerList, setPrayerList] = useState([])
   const [current, setCurrent] = useState(null)
   const [next, setNext] = useState(null)
@@ -114,10 +126,10 @@ export function usePrayerTimes() {
     }
   }, [location, calcAll])
 
-  const reverseGeocode = useCallback(async (lat, lng) => {
+  const reverseGeocode = useCallback(async (lat, lng, cb) => {
     const cacheKey = `geocode-${lat.toFixed(4)}-${lng.toFixed(4)}`
     const cached = getCached(cacheKey)
-    if (cached) { setLocation((prev) => ({ ...prev, name: cached })); return }
+    if (cached) { cb?.(cached); return cached }
     try {
       const res = await fetch(
         `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&zoom=14&accept-language=id`,
@@ -127,10 +139,11 @@ export function usePrayerTimes() {
       const addr = data?.address || {}
       const parts = [addr.city_district || addr.suburb || addr.village, addr.city || addr.state]
       const name = parts.filter(Boolean).join(', ') || 'Lokasi Saya'
-      setLocation((prev) => ({ ...prev, name }))
       setCache(cacheKey, name)
+      cb?.(name)
+      return name
     } catch {
-      // silent — fallback keeps existing name
+      return 'Lokasi Saya'
     }
   }, [])
 
@@ -188,17 +201,24 @@ export function usePrayerTimes() {
         const lat = pos.coords.latitude
         const lng = pos.coords.longitude
         setLocation({ lat, lng, name: 'Lokasi Saya' })
-        reverseGeocode(lat, lng)
+        reverseGeocode(lat, lng, (name) => setLocation((prev) => ({ ...prev, name })))
       },
       () => setError('Aktifkan lokasi untuk akurasi waktu sholat'),
       { enableHighAccuracy: true, timeout: 10000 }
     )
   }, [reverseGeocode])
 
-  useEffect(() => { requestLocation() }, [requestLocation])
+  useEffect(() => {
+    if (locationMode === 'auto') requestLocation()
+  }, [locationMode, requestLocation])
 
-  const setManLocation = useCallback((lat, lng, name) => {
-    setLocation({ lat, lng, name })
+  const setLocationMode = useCallback((mode, manualLoc) => {
+    setLocationModeState(mode)
+    localStorage.setItem('location-mode', mode)
+    if (mode === 'manual' && manualLoc) {
+      setLocation(manualLoc)
+      localStorage.setItem('manual-location', JSON.stringify(manualLoc))
+    }
   }, [])
 
   const toggleAdhan = useCallback((v) => {
@@ -226,11 +246,13 @@ export function usePrayerTimes() {
     adhanEnabled,
     toggleAdhan,
     location,
+    locationMode,
+    setLocationMode,
     requestLocation,
-    setManLocation,
     audioRef,
     alertingRef,
     qiblaDeg,
     qiblaLabel: qiblaLabel(qiblaDeg),
+    reverseGeocode,
   }
 }

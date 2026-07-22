@@ -1,27 +1,49 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { usePrayerTimes } from './hooks/usePrayerTimes'
 import { usePrayerNotification } from './hooks/usePrayerNotification'
+import { useDeviceOrientation } from './hooks/useDeviceOrientation'
+import LocationPicker from './components/LocationPicker'
 
 const WaktuSholatFeature = () => {
   const {
     prayerList, next, countdown, loading, error,
     adhanEnabled, toggleAdhan,
-    location, requestLocation,
+    location, locationMode, setLocationMode, requestLocation,
     audioRef, qiblaDeg, qiblaLabel,
   } = usePrayerTimes()
 
   const { notify, scheduleBackground } = usePrayerNotification()
+  const { heading, requestPermission, startListening, available } = useDeviceOrientation()
   const prevNextKey = useRef(null)
   const [qiblaOpen, setQiblaOpen] = useState(false)
+  const [locPickerOpen, setLocPickerOpen] = useState(false)
+  const compassStarted = useRef(false)
+
+  const openQibla = useCallback(async () => {
+    setQiblaOpen(true)
+    if (available && !compassStarted.current) {
+      const granted = await requestPermission()
+      if (granted) {
+        startListening()
+        compassStarted.current = true
+      }
+    }
+  }, [available, requestPermission, startListening])
 
   useEffect(() => {
     if (!next || prevNextKey.current === next.key) return
     prevNextKey.current = next.key
     const activePrayer = prayerList.find((p) => p.isActive)
     if (!activePrayer || activePrayer.prayer === null) return
+    const flag = `adhan-played-${activePrayer.key}-${Math.floor(activePrayer.time.getTime() / 86400000)}`
+    if (localStorage.getItem(flag)) return
     notify(activePrayer.label)
     scheduleBackground(prayerList)
   }, [next, prayerList, notify, scheduleBackground])
+
+  const handleLocSave = useCallback((mode, coords, name) => {
+    setLocationMode(mode, { lat: coords.lat, lng: coords.lng, name })
+  }, [setLocationMode])
 
   const fmtTime = (d) => {
     if (!d) return '--:--'
@@ -33,12 +55,15 @@ const WaktuSholatFeature = () => {
       <audio ref={audioRef} src="/adhan.mp3" preload="none" />
 
       <div className="sholat-header">
-        <div className="sholat-location-wrap">
+        <button className="sholat-location-btn" onClick={() => setLocPickerOpen(true)}>
           <svg className="sholat-location-icon" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
           </svg>
           <span className="sholat-location">{location.name}</span>
-        </div>
+          <svg className="sholat-location-chevron" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
         <div className="sholat-toggle-wrap">
           <span className="sholat-toggle-label">Azan</span>
           <button
@@ -52,7 +77,7 @@ const WaktuSholatFeature = () => {
       </div>
 
       {qiblaDeg !== null && (
-        <button className="sholat-qibla" onClick={() => setQiblaOpen(true)}>
+        <button className="sholat-qibla" onClick={openQibla}>
           <svg
             className="sholat-qibla-arrow"
             viewBox="0 0 24 24"
@@ -116,7 +141,10 @@ const WaktuSholatFeature = () => {
               </svg>
             </button>
             <div className="qibla-compass-inner">
-              <div className="qibla-compass-ring">
+              <div
+                className="qibla-compass-ring"
+                style={heading !== null ? { transform: `rotate(${-heading}deg)` } : undefined}
+              >
                 <svg viewBox="0 0 200 200" className="qibla-compass-svg">
                   <circle cx="100" cy="100" r="94" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.2" />
                   {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((deg) => (
@@ -161,11 +189,24 @@ const WaktuSholatFeature = () => {
               </div>
               <div className="qibla-info">
                 <span className="qibla-info-deg">{Math.round(qiblaDeg)}° {qiblaLabel}</span>
-                <span className="qibla-info-hint">Arahkan ke {qiblaLabel} ({Math.round(qiblaDeg)}°) untuk menghadap Kiblat</span>
+                <span className="qibla-info-hint">
+                  {heading !== null
+                    ? `Hadapkan perangkat ke arah ${qiblaLabel} (${Math.round(qiblaDeg)}°)`
+                    : `Arahkan ke ${qiblaLabel} (${Math.round(qiblaDeg)}°) untuk menghadap Kiblat`}
+                </span>
               </div>
             </div>
           </div>
         </div>
+      )}
+
+      {locPickerOpen && (
+        <LocationPicker
+          location={location}
+          mode={locationMode}
+          onSave={handleLocSave}
+          onClose={() => setLocPickerOpen(false)}
+        />
       )}
     </div>
   )
