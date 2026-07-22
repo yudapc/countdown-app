@@ -1,11 +1,13 @@
 import { useRef, useCallback, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { usePersistentCount } from './hooks'
+import { CountdownFeature } from '../countdown'
 
 const TOTAL_BEADS = 33
 const ANGLE_STEP = 360 / TOTAL_BEADS
 const GAP_DEG = 7
 
-const TasbihFeature = () => {
+const TasbihView = () => {
   const [count, setCount] = usePersistentCount()
   const displayRef = useRef(null)
   const [slideIndex, setSlideIndex] = useState(0)
@@ -100,6 +102,31 @@ const TasbihFeature = () => {
           <span className="tasbih-plus-text">+</span>
         </button>
       </div>
+    </div>
+  )
+}
+
+const TasbihFeature = () => {
+  const location = useLocation()
+  const [tab, setTab] = useState(() => location.state?.subTab || 'dzikir')
+
+  return (
+    <div>
+      <div className="mode-toggle">
+        <button
+          className={`mode-btn ${tab === 'dzikir' ? 'active' : ''}`}
+          onClick={() => setTab('dzikir')}
+        >
+          Dzikir
+        </button>
+        <button
+          className={`mode-btn ${tab === 'timer' ? 'active' : ''}`}
+          onClick={() => setTab('timer')}
+        >
+          Timer
+        </button>
+      </div>
+      {tab === 'dzikir' ? <TasbihView /> : <CountdownFeature />}
     </div>
   )
 }
