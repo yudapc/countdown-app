@@ -1,27 +1,21 @@
 import '../App.css'
 import { useEffect, useState } from 'react'
-import { TasbihFeature, QuranFeature, HaditsFeature } from '../features'
+import { TasbihFeature, QuranFeature, HaditsFeature, WaktuSholatFeature } from '../features'
 import { Navigate, NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { useCountdown, useLocalStorageState, useHeader, useAudio } from '../shared'
 import { PullToRefresh } from '../shared/components'
 
 const TAB_NAMES = {
-  '/tasbih': 'Tasbih',
+  '/sholat': 'Waktu Sholat',
   '/quran': 'Al-Quran',
   '/hadits': 'Hadits',
+  '/tasbih': 'Tasbih',
 }
 
-function TasbihIcon() {
+function SholatIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <circle cx="12" cy="5" r="2" />
-      <circle cx="5" cy="12" r="2" />
-      <circle cx="19" cy="12" r="2" />
-      <circle cx="12" cy="19" r="2" />
-      <circle cx="8" cy="8" r="1.5" />
-      <circle cx="16" cy="8" r="1.5" />
-      <circle cx="8" cy="16" r="1.5" />
-      <circle cx="16" cy="16" r="1.5" />
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
     </svg>
   )
 }
@@ -48,11 +42,27 @@ function HaditsIcon() {
   )
 }
 
+function TasbihIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <circle cx="12" cy="5" r="2" />
+      <circle cx="5" cy="12" r="2" />
+      <circle cx="19" cy="12" r="2" />
+      <circle cx="12" cy="19" r="2" />
+      <circle cx="8" cy="8" r="1.5" />
+      <circle cx="16" cy="8" r="1.5" />
+      <circle cx="8" cy="16" r="1.5" />
+      <circle cx="16" cy="16" r="1.5" />
+    </svg>
+  )
+}
+
 const QuranListPage = () => <QuranFeature />
 const QuranSurahPage = () => <QuranFeature />
 const QuranJuzPage = () => <QuranFeature />
 const HaditsListPage = () => <HaditsFeature />
 const HaditsDetailPage = () => <HaditsFeature />
+const SholatPage = () => <WaktuSholatFeature />
 
 function App() {
   const location = useLocation()
@@ -88,9 +98,9 @@ function App() {
 
   useEffect(() => {
     const seoByPath = {
-      '/tasbih': {
-        title: 'Tasbih | Muslim',
-        description: 'Tasbih digital dan countdown timer.',
+      '/sholat': {
+        title: 'Waktu Sholat | Muslim',
+        description: 'Jadwal waktu sholat, arah kiblat, dan azan berdasarkan lokasi Anda.',
       },
       '/quran': {
         title: 'Al-Quran | Muslim',
@@ -100,9 +110,13 @@ function App() {
         title: 'Hadits | Muslim',
         description: 'Kumpulan hadits dari berbagai perawi.',
       },
+      '/tasbih': {
+        title: 'Tasbih | Muslim',
+        description: 'Tasbih digital dan countdown timer.',
+      },
       default: {
-        title: 'Muslim - Tasbih, Quran, Hadits & Countdown',
-        description: 'Aplikasi Muslim: Tasbih digital, Al-Quran, Hadits, dan Countdown.',
+        title: 'Muslim - Waktu Sholat, Quran, Hadits & Tasbih',
+        description: 'Aplikasi Muslim: Waktu Sholat, Arah Kiblat, Al-Quran, Hadits, Tasbih, dan Countdown.',
       },
     }
 
@@ -199,17 +213,18 @@ function App() {
         <PullToRefresh onRefresh={handleRefresh}>
           <div className="tab-content" key={location.pathname}>
             <Routes>
-              <Route path="/" element={<Navigate to="/tasbih" replace />} />
-              <Route path="/tasbih" element={<TasbihFeature />} />
+              <Route path="/" element={<Navigate to="/sholat" replace />} />
+              <Route path="/sholat" element={<SholatPage />} />
               <Route path="/quran" element={<QuranListPage />} />
               <Route path="/quran/juz/:juzNumber" element={<QuranJuzPage />} />
               <Route path="/quran/:surahNumber" element={<QuranSurahPage />} />
               <Route path="/hadits" element={<HaditsListPage />} />
               <Route path="/hadits/:slug" element={<HaditsDetailPage />} />
-              <Route path="/waktu" element={<Navigate to="/tasbih" replace />} />
+              <Route path="/tasbih" element={<TasbihFeature />} />
+              <Route path="/waktu" element={<Navigate to="/sholat" replace />} />
               <Route path="/countdown" element={<Navigate to="/tasbih" replace />} />
               <Route path="/counter" element={<Navigate to="/tasbih" replace />} />
-              <Route path="*" element={<Navigate to="/tasbih" replace />} />
+              <Route path="*" element={<Navigate to="/sholat" replace />} />
             </Routes>
           </div>
         </PullToRefresh>
@@ -232,14 +247,17 @@ function App() {
       )}
 
       <nav className="bottom-tabs">
-        <NavLink to="/tasbih" aria-label="Tasbih" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
-          <TasbihIcon />
+        <NavLink to="/sholat" aria-label="Waktu Sholat" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
+          <SholatIcon />
         </NavLink>
         <NavLink to="/quran" aria-label="Quran" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
           <QuranIcon />
         </NavLink>
         <NavLink to="/hadits" aria-label="Hadits" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
           <HaditsIcon />
+        </NavLink>
+        <NavLink to="/tasbih" aria-label="Tasbih" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
+          <TasbihIcon />
         </NavLink>
       </nav>
     </div>

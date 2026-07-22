@@ -1,6 +1,6 @@
 # Muslim App — Agent Guide
 
-Mobile-first React PWA: Tasbih counter, Countdown timer, Al-Quran reader, Hadits encyclopedia.
+Mobile-first React PWA: Tasbih counter, Countdown timer, Al-Quran reader, Hadits encyclopedia, Waktu Sholat.
 
 ## Commands
 
@@ -17,7 +17,7 @@ No test framework installed. No typecheck step.
 
 - **Framework:** React 19 + react-router-dom 7 (Pages Router style — `useParams`, `useNavigate`, `Route`)
 - **Build:** Vite 6 + `@vitejs/plugin-react`
-- **PWA:** `vite-plugin-pwa` with auto-update, workbox, navigateFallback, home-screen shortcut (`/tasbih`, `/quran`)
+- **PWA:** `vite-plugin-pwa` with `injectManifest` strategy, custom `src/sw.js`, auto-update, navigateFallback, home-screen shortcuts (`/tasbih`, `/quran`, `/sholat`)
 - **Deploy:** Vercel SPA rewrites (`vercel.json` rewrites all paths to `index.html`)
 - **No state management library** — uses React context + localStorage only
 
@@ -31,6 +31,8 @@ src/
     countdown/           # /waktu — countdown timer with SVG ring
     quran/               # /quran[/:surahNumber], /quran/juz/:juzNumber
     hadits/              # /hadits[/:slug] — hadith by narrator
+    waktusholat/         # /sholat — prayer times with local adhan calculation
+  sw.js                  # Custom service worker (injectManifest) for background notifications
   shared/                # Shared components, context, hooks, utils
     context/             # AudioContext, AyahAudioContext, HeaderContext, CountdownContext
     providers/           # CountdownProvider
@@ -50,6 +52,7 @@ src/
 - **Audio** streams from CDN — surah audio: `cdn.islamic.network/quran/audio-surah/128/ar.alafasy/`; ayah audio: `everyayah.com/data/Abdul_Basit_Murattal_192kbps/`.
 - **Two audio contexts** — `AudioContext` (full surah, persistent across tabs with floating chip), `AyahAudioContext` (per-ayah playback within surah/juz view). They operate independently.
 - **Countdown** persists via localStorage (`countdown-end-at`, `countdown-started-at`). Alarm plays `ringtone.wav` on expiry. Floating chip on other pages when active.
+- **Waktu Sholat** uses `adhan` npm package for local calculation (`CalculationMethod.Singapore()` which matches Kemenag: 20° Fajr, 18° Isha). Uses `navigator.geolocation` for coordinates. Caches location in localStorage. Toggle for adhan audio (`adhan.mp3` in `public/`) plays at prayer time. Service worker handles background notifications via `postMessage`.
 - **Theme** — cycles system → light → dark. Stored in localStorage as `theme-mode`.
 - **Header** is dynamic — feature views call `setHeader(title, backNav)` from `HeaderContext`, the root App renders it; used by Quran and Hadits detail views.
 - **Fonts** — Sora (Google Fonts, Latin/UI text), Scheherazade New (local `public/fonts/*.ttf`, Arabic text)
