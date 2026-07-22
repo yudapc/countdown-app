@@ -11,7 +11,7 @@ export const saveLastRead = ({ surahNumber, ayahNumber, surahName }) => {
         surahName: surahName || '',
       })
     )
-  } catch (e) {
+  } catch {
     // localStorage unavailable — silently ignore
   }
 }
@@ -20,7 +20,7 @@ export const getLastRead = () => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     return raw ? JSON.parse(raw) : null
-  } catch (e) {
+  } catch {
     return null
   }
 }
@@ -28,7 +28,7 @@ export const getLastRead = () => {
 export const clearLastRead = () => {
   try {
     localStorage.removeItem(STORAGE_KEY)
-  } catch (e) {
+  } catch {
     // silently ignore
   }
 }

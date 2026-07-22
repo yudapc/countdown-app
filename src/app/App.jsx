@@ -69,7 +69,7 @@ function App() {
   const navigate = useNavigate()
   const { isActive, formattedTime } = useCountdown()
   const { title: headerTitle, onBack: headerOnBack } = useHeader()
-  const { currentSurah, playing: audioPlaying, toggleSurah } = useAudio()
+  const { currentSurah, playing: audioPlaying } = useAudio()
   const [themeMode, setThemeMode] = useLocalStorageState('theme-mode', 'system')
   const [deviceTheme, setDeviceTheme] = useState(() =>
     window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
@@ -86,7 +86,7 @@ function App() {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', activeTheme)
-  }, [themeMode, deviceTheme])
+  }, [activeTheme])
 
   const toggleTheme = () => {
     setThemeMode((prev) => {
@@ -163,7 +163,6 @@ function App() {
   const defaultTitle = TAB_NAMES[location.pathname] || 'Muslim'
 
   const isSameSurahAudio = currentSurah && location.pathname === `/quran/${currentSurah.number}`
-  const showAudioChip = audioPlaying && currentSurah && !isSameSurahAudio
 
   const handleAudioChipClick = () => {
     if (currentSurah) {

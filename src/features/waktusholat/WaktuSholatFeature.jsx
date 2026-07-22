@@ -6,9 +6,9 @@ import LocationPicker from './components/LocationPicker'
 
 const WaktuSholatFeature = () => {
   const {
-    prayerList, next, countdown, loading, error,
+    prayerList, next, countdown, loading,
     adhanEnabled, toggleAdhan,
-    location, locationMode, setLocationMode, requestLocation,
+    location, locationMode, setLocationMode,
     audioRef, qiblaDeg, qiblaLabel,
   } = usePrayerTimes()
 
@@ -98,13 +98,6 @@ const WaktuSholatFeature = () => {
             <path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
-      )}
-
-      {error && (
-        <div className="sholat-error">
-          <span>{error}</span>
-          <button className="sholat-retry-btn" onClick={requestLocation}>Coba lagi</button>
-        </div>
       )}
 
       {loading && !prayerList.length ? (
