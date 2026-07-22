@@ -218,8 +218,10 @@ export function usePrayerTimes() {
     if (mode === 'manual' && manualLoc) {
       setLocation(manualLoc)
       localStorage.setItem('manual-location', JSON.stringify(manualLoc))
+    } else if (mode === 'auto') {
+      requestLocation()
     }
-  }, [])
+  }, [requestLocation])
 
   const toggleAdhan = useCallback((v) => {
     setAdhanEnabled(v)

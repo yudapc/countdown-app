@@ -88,7 +88,11 @@ const LocationPicker = ({ location, mode, onSave, onClose }) => {
   }, [])
 
   const handleSave = () => {
-    onSave(locMode, coords, locName)
+    if (locMode === 'auto') {
+      onSave('auto')
+    } else {
+      onSave('manual', coords, locName)
+    }
     onClose()
   }
 

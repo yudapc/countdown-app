@@ -47,7 +47,11 @@ const WaktuSholatFeature = () => {
   }, [next, prayerList, notify, scheduleBackground])
 
   const handleLocSave = useCallback((mode, coords, name) => {
-    setLocationMode(mode, { lat: coords.lat, lng: coords.lng, name })
+    if (mode === 'auto') {
+      setLocationMode('auto')
+    } else {
+      setLocationMode('manual', { lat: coords.lat, lng: coords.lng, name })
+    }
   }, [setLocationMode])
 
   const fmtTime = (d) => {
