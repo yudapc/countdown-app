@@ -209,6 +209,13 @@
   transform: translateX(-50%) scaleX(1);
 }
 
+.tab-label {
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
 /* ─── Page Header ─── */
 
 .page-header {

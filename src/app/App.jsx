@@ -248,15 +248,19 @@ function App() {
       <nav className="bottom-tabs">
         <NavLink to="/sholat" aria-label="Waktu Sholat" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
           <SholatIcon />
+          <span className="tab-label">Sholat</span>
         </NavLink>
-        <NavLink to="/quran" aria-label="Quran" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
+        <NavLink to="/quran" aria-label="Al-Quran" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
           <QuranIcon />
+          <span className="tab-label">Al-Quran</span>
         </NavLink>
         <NavLink to="/hadits" aria-label="Hadits" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
           <HaditsIcon />
+          <span className="tab-label">Hadits</span>
         </NavLink>
         <NavLink to="/tasbih" aria-label="Tasbih" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
           <TasbihIcon />
+          <span className="tab-label">Tasbih</span>
         </NavLink>
       </nav>
     </div>
