@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# CodeGraph
+.codegraph/
+*.duckdb
+*.duckdb.wal
+
+# OpenCode-Mem
+.opencode-mem/

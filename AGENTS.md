@@ -69,3 +69,48 @@ src/
 - All text in Indonesian (id-ID) — UI labels, error messages, SEO descriptions
 - React Refresh `only-export-components` is a warning — component-export-only files expected
 - `no-unused-vars` error with `varsIgnorePattern: '^[A-Z_]'`
+
+## Tools
+
+### CodeGraph
+
+CodeGraph MCP server memberikan code intelligence — call graph, impact analysis, security findings, taint paths.
+
+**Kapan menggunakan:**
+- Sebelum refactoring — gunakan `codegraph_callers` untuk mencari semua caller fungsi yang akan diubah
+- Review perubahan — gunakan `codegraph_review` untuk security + impact analysis
+- Investigasi bug — gunakan `codegraph_context` untuk trace alur fungsi
+
+**Contoh:**
+```
+codegraph_callers({ name: "fetchSurahAudio" })
+codegraph_review({ base_ref: "HEAD~1" })
+```
+
+### OpenCode-Mem
+
+OpenCode-Mem memberikan persistent memory — konteks bertahan antar session.
+
+**Kapan menggunakan:**
+- Setelah menyelesaikan task signifikan — simpan ringkasan dengan `mem_save`
+- Sebelum memulai task baru — cek konteks sebelumnya dengan `search` atau `timeline`
+- Ketika user bertanya tentang apa yang sudah dilakukan — gunakan `get_observations`
+
+**Contoh:**
+```
+mem_save({ title: "Fix audio autoplay", content: "Fixed Safari audio policy by...", type: "bugfix" })
+search({ query: "quran audio" })
+```
+
+### RTK (Ritka)
+
+RTK adalah CLI wrapper untuk shell commands dengan output formatting yang lebih baik.
+
+**Kapan menggunakan:**
+- Selalu gunakan `rtk` sebagai pengganti command shell langsung untuk operasi file/direktori
+- Contoh: `rtk ls`, `rtk cp`, `rtk mv`, `rtk rm`, `rtk mkdir`
+
+**Aturan:**
+- Gunakan `rtk` untuk semua operasi file system
+- Gunakan `rtk git` untuk git operations dengan output yang lebih terstruktur
+- Gunakan `rtk npm/bun` untuk package operations
